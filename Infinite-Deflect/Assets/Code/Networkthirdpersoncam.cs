@@ -3,16 +3,22 @@ using UnityEngine;
 
 public class NetworkedThirdPersonCamera : MonoBehaviour
 {
+    [Header("Camera Settings")]
     [SerializeField] private float sensitivity = 2f;
     [SerializeField] private float rotationSmoothTime = 0.12f;
-    [SerializeField] private float cameraDist = 5f; // Distance from target
-    [SerializeField] private Vector3 cameraOffset = new Vector3(0, 2, 0); // Height offset
+    [SerializeField] private float cameraDist = 5f;
+    [SerializeField] private Vector3 cameraOffset = new Vector3(0, 2, 0);
     
+    [Header("Collision Settings")]
+    [SerializeField] private float collisionOffset = 0.2f;
+    [SerializeField] private LayerMask collisionMask;
+
     private Transform target;
     private Vector2 rotation;
     private Vector2 currentRotation;
     private Vector2 rotationVelocity;
     private bool isInitialized = false;
+    private NetworkObject playerNetworkObject;
 
     private void Start()
     {
@@ -21,24 +27,22 @@ public class NetworkedThirdPersonCamera : MonoBehaviour
 
     private void InitializeCamera()
     {
-        NetworkObject localPlayer = NetworkManager.Singleton?.LocalClient?.PlayerObject;
+        if (NetworkManager.Singleton?.LocalClient?.PlayerObject == null) return;
+
+        playerNetworkObject = NetworkManager.Singleton.LocalClient.PlayerObject;
+        target = playerNetworkObject.transform;
+        isInitialized = true;
+        Cursor.lockState = CursorLockMode.Locked;
         
-        if (localPlayer != null)
-        {
-            target = localPlayer.transform;
-            isInitialized = true;
-            Cursor.lockState = CursorLockMode.Locked;
-            
-            // Initialize rotation to match current angles
-            rotation = new Vector2(target.eulerAngles.y, 0f);
-            currentRotation = rotation;
-            
-            // Set initial position
-            UpdateCameraPosition();
-        }
+        // Initialize rotation to match current angles
+        rotation = new Vector2(target.eulerAngles.y, 0f);
+        currentRotation = rotation;
+        
+        // Set initial position
+        UpdateCameraPosition();
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (!isInitialized && NetworkManager.Singleton != null)
         {
@@ -48,7 +52,11 @@ public class NetworkedThirdPersonCamera : MonoBehaviour
 
         if (!isInitialized || target == null) return;
         
-        HandleCameraMovement();
+        // Only handle camera if we own the player
+        if (playerNetworkObject.IsOwner)
+        {
+            HandleCameraMovement();
+        }
     }
 
     private void HandleCameraMovement()
@@ -61,7 +69,7 @@ public class NetworkedThirdPersonCamera : MonoBehaviour
         rotation.x += mouseX;
         rotation.y -= mouseY;
         
-        // Clamp vertical rotation
+        // Clamp vertical rotation to prevent over-rotation
         rotation.y = Mathf.Clamp(rotation.y, -60f, 80f);
 
         // Smoothly interpolate current rotation
@@ -78,8 +86,25 @@ public class NetworkedThirdPersonCamera : MonoBehaviour
         // Update camera position
         UpdateCameraPosition();
 
-        // Update player rotation (only Y axis)
-        target.rotation = Quaternion.Euler(0, currentRotation.x, 0);
+        // Smoothly rotate the player model to match camera horizontal rotation
+        float targetYRotation = currentRotation.x;
+        if (target.GetComponent<Rigidbody>() != null)
+        {
+            // If using Rigidbody, make sure to only rotate the visual model if there is movement
+            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+            {
+                target.rotation = Quaternion.Lerp(
+                    target.rotation,
+                    Quaternion.Euler(0, targetYRotation, 0),
+                    Time.deltaTime * 10f
+                );
+            }
+        }
+        else
+        {
+            // For non-Rigidbody characters, always update rotation
+            target.rotation = Quaternion.Euler(0, targetYRotation, 0);
+        }
     }
 
     private void UpdateCameraPosition()
@@ -88,16 +113,19 @@ public class NetworkedThirdPersonCamera : MonoBehaviour
 
         // Calculate desired camera position
         Vector3 targetPosition = target.position + cameraOffset;
-        Vector3 cameraDirection = -transform.forward * cameraDist;
+        Vector3 directionToCamera = -transform.forward;
         
-        // Check for obstacles (optional)
-        if (Physics.Raycast(targetPosition, -transform.forward, out RaycastHit hit, cameraDist))
+        // Perform collision check
+        if (Physics.SphereCast(targetPosition, 0.2f, directionToCamera, out RaycastHit hit, 
+            cameraDist, collisionMask))
         {
-            transform.position = hit.point + transform.forward * 0.2f;
+            // If there's an obstacle, position the camera at the hit point with offset
+            transform.position = hit.point + directionToCamera * collisionOffset;
         }
         else
         {
-            transform.position = targetPosition + cameraDirection;
+            // No obstacle, set to desired position
+            transform.position = targetPosition + directionToCamera * cameraDist;
         }
     }
 
