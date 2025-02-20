@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8417692125023249882}
   - component: {fileID: 6178530133839372742}
   - component: {fileID: 2022575463373206535}
-  - component: {fileID: 1457960576459230483}
+  - component: {fileID: 5806702648512290820}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -184,7 +184,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   gravity: -9.81
---- !u!114 &1457960576459230483
+--- !u!114 &5806702648512290820
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
