@@ -4,193 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9a8fcc8b-49ff-4ac0-b3a6-e75a36f69e8e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/.idea/.idea.Infinite Deflect/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/.idea/.idea.Infinite Deflect/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/.idea/.idea.Infinite Deflect/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/.idea/.idea.Infinite Deflect/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Code.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Code/MovementStateManager.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Code/MovementStateManager.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Code/ThirdPersonFollowCamera.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Code/ThirdPersonFollowCamera.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/DefaultNetworkPrefabs.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/DefaultNetworkPrefabs.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/DefaultWidgetConfiguration.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/DefaultWidgetConfiguration.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/INput.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/INput/PlayerControls.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/INput/PlayerControls.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/INput/PlayerControls.inputactions" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/INput/PlayerControls.inputactions.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/New Terrain 2.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/New Terrain 2.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Prefab/Player.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Prefab/Player.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Prefab/PlayerPrefab.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Prefab/PlayerPrefab.prefab.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Readme.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Readme.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/DefaultNetworkPrefabs.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/DefaultNetworkPrefabs.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/NGO_Minimal_Setup.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/NGO_Minimal_Setup/NGO_Setup.unity" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/NGO_Minimal_Setup/NGO_Setup.unity.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/NGO_Minimal_Setup/NetworkPrefabsList.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/NGO_Minimal_Setup/NetworkPrefabsList.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Fonts.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Fonts/LiberationSans - OFL.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Fonts/LiberationSans - OFL.txt.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Fonts/LiberationSans.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Fonts/LiberationSans.ttf.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Fonts &amp; Materials.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Drop Shadow.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Drop Shadow.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Outline.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Outline.mat.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/LineBreaking Following Characters.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/LineBreaking Following Characters.txt.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/LineBreaking Leading Characters.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/LineBreaking Leading Characters.txt.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Sprite Assets.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Sprite Assets/EmojiOne.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Sprite Assets/EmojiOne.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Style Sheets.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/TMP Settings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Resources/TMP Settings.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/SDFFunctions.hlsl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/SDFFunctions.hlsl.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_Bitmap.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_Bitmap.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF Overlay.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF Overlay.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF SSD.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF SSD.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-HDRP LIT.shadergraph" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-HDRP LIT.shadergraph.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-HDRP UNLIT.shadergraph" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-HDRP UNLIT.shadergraph.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Mobile-2-Pass.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Mobile-2-Pass.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Surface.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-Surface.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-URP Lit.shadergraph" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-URP Lit.shadergraph.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-URP Unlit.shadergraph" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF-URP Unlit.shadergraph.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_SDF.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_Sprite.shader" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMP_Sprite.shader.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMPro.cginc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMPro.cginc.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMPro_Mobile.cginc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMPro_Mobile.cginc.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMPro_Properties.cginc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMPro_Properties.cginc.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMPro_Surface.cginc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Shaders/TMPro_Surface.cginc.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Sprites.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Sprites/EmojiOne Attribution.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Sprites/EmojiOne Attribution.txt.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Sprites/EmojiOne.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Sprites/EmojiOne.json.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Sprites/EmojiOne.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TextMesh Pro/Sprites/EmojiOne.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TutorialInfo.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TutorialInfo/Icons.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TutorialInfo/Icons/URP.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TutorialInfo/Icons/URP.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TutorialInfo/Layout.wlt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TutorialInfo/Layout.wlt.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TutorialInfo/Scripts.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TutorialInfo/Scripts/Editor.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TutorialInfo/Scripts/Editor/ReadmeEditor.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TutorialInfo/Scripts/Editor/ReadmeEditor.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TutorialInfo/Scripts/Readme.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/TutorialInfo/Scripts/Readme.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/Widgets.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/Widgets/Scenes.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/Widgets/Scenes/WidgetsQuickstart.unity" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Resouce/Widgets/Scenes/WidgetsQuickstart.unity.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Scenes.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Scenes/Test.unity" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Scenes/Test.unity.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/DefaultVolumeProfile.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/DefaultVolumeProfile.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/Mobile_RPAsset.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/Mobile_RPAsset.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/Mobile_Renderer.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/Mobile_Renderer.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/PC_RPAsset.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/PC_RPAsset.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/PC_Renderer.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/PC_Renderer.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/SampleSceneProfile.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/SampleSceneProfile.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/UniversalRenderPipelineGlobalSettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/Settings/UniversalRenderPipelineGlobalSettings.asset.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/UserChoices.choices" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Assets/UserChoices.choices.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Packages/manifest.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/Packages/packages-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/AudioManager.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/ClusterInputManager.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/DynamicsManager.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/EditorSettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/GraphicsSettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/InputManager.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/MemorySettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/MultiplayerManager.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/NavMeshAreas.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/PackageManagerSettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/Packages/com.unity.multiplayer.tools/CustomColorSettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/Packages/com.unity.services.core/Settings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/Packages/com.unity.services.vivox/Settings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/Physics2DSettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/PresetManager.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/ProjectSettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/ProjectVersion.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/QualitySettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/SceneTemplateSettings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/ShaderGraphSettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/TagManager.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/TimeManager.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/URPProjectSettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/UnityConnectSettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/VFXManager.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/VersionControlSettings.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/VirtualProjectsConfig.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Infinite Deflect/ProjectSettings/XRSettings.asset" beforeDir="false" />
-    </list>
+    <list default="true" id="9a8fcc8b-49ff-4ac0-b3a6-e75a36f69e8e" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -198,35 +12,36 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Code/PlayerCameraManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@24b10291b18f/Runtime/UGUI/UI/Core/Selectable.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 2
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="2t8W2glJ1pJgdoj9hYsZMn8nJgd" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "C:\\Users\\user\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache",
-      "C:\\Users\\user\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache",
-      "C:\\Users\\user\\AppData\\Local\\Symbols\\src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;C:\\Users\\user\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache&quot;,
+      &quot;C:\\Users\\user\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache&quot;,
+      &quot;C:\\Users\\user\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="D:\Unity\6000.0.36f1\Editor\Unity.exe" />
@@ -274,6 +89,7 @@
       <option name="presentableId" value="Default" />
       <updated>1739733979366</updated>
       <workItem from="1739733981656" duration="1341000" />
+      <workItem from="1739972438022" duration="104000" />
     </task>
     <servers />
   </component>
