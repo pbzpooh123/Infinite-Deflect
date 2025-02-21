@@ -3,50 +3,66 @@ using UnityEngine;
 
 public class NetworkedThirdPersonCamera : MonoBehaviour
 {
+    [Header("Camera Settings")]
     [SerializeField] private float sensitivity = 2f;
-    [SerializeField] private float rotationSmoothTime = 0.12f;
-    [SerializeField] private float cameraDist = 5f; // Distance from target
-    [SerializeField] private Vector3 cameraOffset = new Vector3(0, 2, 0); // Height offset
+    [SerializeField] private float cameraSmoothTime = 0.05f; // Camera smoothing
+    [SerializeField] private float playerRotationSpeed = 15f; // Separate player rotation speed
+    [SerializeField] private float cameraDist = 5f;
+    [SerializeField] private Vector3 cameraOffset = new Vector3(0, 2, 0);
     
+    [Header("Collision Settings")]
+    [SerializeField] private float collisionOffset = 0.2f;
+    [SerializeField] private LayerMask collisionMask;
+
     private Transform target;
     private Vector2 rotation;
     private Vector2 currentRotation;
     private Vector2 rotationVelocity;
     private bool isInitialized = false;
+    private NetworkObject playerNetworkObject;
+    private float targetYaw;
+
+    private void Awake()
+    {
+        TryInitializeCamera();
+    }
 
     private void Start()
     {
-        InitializeCamera();
+        if (!isInitialized)
+        {
+            TryInitializeCamera();
+        }
     }
 
-    private void InitializeCamera()
+    private void TryInitializeCamera()
     {
-        NetworkObject localPlayer = NetworkManager.Singleton?.LocalClient?.PlayerObject;
-        
-        if (localPlayer != null)
+        if (NetworkManager.Singleton?.LocalClient?.PlayerObject != null)
         {
-            target = localPlayer.transform;
+            playerNetworkObject = NetworkManager.Singleton.LocalClient.PlayerObject;
+            target = playerNetworkObject.transform;
             isInitialized = true;
             Cursor.lockState = CursorLockMode.Locked;
-            
-            // Initialize rotation to match current angles
-            rotation = new Vector2(target.eulerAngles.y, 0f);
+
+            // Set initial rotations
+            targetYaw = target.eulerAngles.y;
+            rotation = new Vector2(targetYaw, 0f);
             currentRotation = rotation;
+            transform.rotation = Quaternion.Euler(0, targetYaw, 0);
             
-            // Set initial position
             UpdateCameraPosition();
         }
     }
 
-    private void Update()
+    private void LateUpdate()
     {
-        if (!isInitialized && NetworkManager.Singleton != null)
+        if (!isInitialized)
         {
-            InitializeCamera();
+            TryInitializeCamera();
             return;
         }
 
-        if (!isInitialized || target == null) return;
+        if (target == null || !playerNetworkObject.IsOwner) return;
         
         HandleCameraMovement();
     }
@@ -54,50 +70,56 @@ public class NetworkedThirdPersonCamera : MonoBehaviour
     private void HandleCameraMovement()
     {
         // Get mouse input
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivity;
+        float mouseX = Input.GetAxisRaw("Mouse X") * sensitivity;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * sensitivity;
 
-        // Update target rotation
+        // Update rotation target
         rotation.x += mouseX;
-        rotation.y -= mouseY;
-        
-        // Clamp vertical rotation
-        rotation.y = Mathf.Clamp(rotation.y, -60f, 80f);
+        rotation.y = Mathf.Clamp(rotation.y - mouseY, -60f, 80f);
 
-        // Smoothly interpolate current rotation
+        // Smooth camera rotation only
         currentRotation = Vector2.SmoothDamp(
             currentRotation,
             rotation,
             ref rotationVelocity,
-            rotationSmoothTime
+            cameraSmoothTime,
+            Mathf.Infinity,
+            Time.deltaTime
         );
 
-        // Apply rotation to camera
+        // Apply camera rotation
         transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
-
+        
         // Update camera position
         UpdateCameraPosition();
 
-        // Update player rotation (only Y axis)
-        target.rotation = Quaternion.Euler(0, currentRotation.x, 0);
+        // Direct player rotation without Lerp
+        targetYaw = currentRotation.x;
+        Vector3 targetEuler = target.eulerAngles;
+        float newYaw = Mathf.MoveTowardsAngle(targetEuler.y, targetYaw, playerRotationSpeed * Time.deltaTime * 100f);
+        target.rotation = Quaternion.Euler(targetEuler.x, newYaw, targetEuler.z);
     }
 
     private void UpdateCameraPosition()
     {
         if (target == null) return;
 
-        // Calculate desired camera position
         Vector3 targetPosition = target.position + cameraOffset;
-        Vector3 cameraDirection = -transform.forward * cameraDist;
+        Vector3 cameraDirection = -transform.forward;
         
-        // Check for obstacles (optional)
-        if (Physics.Raycast(targetPosition, -transform.forward, out RaycastHit hit, cameraDist))
+        if (Physics.SphereCast(
+            targetPosition,
+            0.2f,
+            cameraDirection,
+            out RaycastHit hit,
+            cameraDist,
+            collisionMask))
         {
-            transform.position = hit.point + transform.forward * 0.2f;
+            transform.position = hit.point - cameraDirection * collisionOffset;
         }
         else
         {
-            transform.position = targetPosition + cameraDirection;
+            transform.position = targetPosition + cameraDirection * cameraDist;
         }
     }
 
