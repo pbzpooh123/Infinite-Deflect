@@ -4,21 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9a8fcc8b-49ff-4ac0-b3a6-e75a36f69e8e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Infinite-Deflect/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Infinite-Deflect/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/NetworkedMovementStateManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/NetworkedMovementStateManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/Networkthirdpersoncam.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Networkthirdpersoncam.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/DefaultNetworkPrefabs.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DefaultNetworkPrefabs.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/New Terrain 1.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/New Terrain 1.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefab/Cam.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Cam.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefab/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Player.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/ColosseumArena.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/ColosseumArena.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/ForestArena.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/ForestArena.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
-    </list>
+    <list default="true" id="9a8fcc8b-49ff-4ac0-b3a6-e75a36f69e8e" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,6 +15,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Code/PlayerCameraManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Code/SpawnArea.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.tools@5e1c41aee6e2/Common/Runtime/Helpers/RuntimeUpdaterBehaviour.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.multiplayer@888db1d8279d/Runtime/Multiplayer/Lobby/LobbyHandler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@24b10291b18f/Runtime/UGUI/UI/Core/Selectable.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
@@ -108,7 +95,7 @@
       <workItem from="1739733981656" duration="1341000" />
       <workItem from="1739972438022" duration="104000" />
       <workItem from="1740060350805" duration="61000" />
-      <workItem from="1740125590583" duration="3758000" />
+      <workItem from="1740125590583" duration="3843000" />
     </task>
     <servers />
   </component>
