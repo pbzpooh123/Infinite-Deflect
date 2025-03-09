@@ -52,7 +52,7 @@ public class GameBall : NetworkBehaviour
         Vector3 direction = (targetPlayer.transform.position - transform.position).normalized;
         
         // Set the ball's velocity
-        rb.velocity = direction * currentSpeed.Value;
+        rb.linearVelocity = direction * currentSpeed.Value;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -74,12 +74,12 @@ public class GameBall : NetworkBehaviour
         {
             // Calculate deflection direction
             Vector3 deflectDirection = Vector3.Reflect(
-                rb.velocity.normalized, 
+                rb.linearVelocity.normalized, 
                 collision.contacts[0].normal
             );
             
             // Apply deflected velocity
-            rb.velocity = deflectDirection * currentSpeed.Value;
+            rb.linearVelocity = deflectDirection * currentSpeed.Value;
         }
     }
 

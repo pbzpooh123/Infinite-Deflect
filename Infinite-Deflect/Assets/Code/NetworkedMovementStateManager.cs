@@ -180,10 +180,10 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     private void HandleOwnerMovement()
     {
         Vector3 targetVelocity = movementDirection * moveSpeed;
-        Vector3 currentVelocity = rb.velocity;
+        Vector3 currentVelocity = rb.linearVelocity;
         targetVelocity.y = currentVelocity.y;
         
-        rb.velocity = targetVelocity;
+        rb.linearVelocity = targetVelocity;
         netPosition.Value = transform.position;
         netRotation.Value = transform.rotation;
     }
