@@ -7,13 +7,8 @@
     <list default="true" id="9a8fcc8b-49ff-4ac0-b3a6-e75a36f69e8e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Infinite-Deflect/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Infinite-Deflect/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Code/NetworkedMovementStateManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/NetworkedMovementStateManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/Networkthirdpersoncam.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Networkthirdpersoncam.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/DefaultNetworkPrefabs.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/DefaultNetworkPrefabs.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Model/Weapon/BasebalBat/BaseballBat.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Model/Weapon/BasebalBat/BaseballBat.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefab/Cam.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Cam.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefab/PlayerDeflect.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/PlayerDeflect.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/ForestArena.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/ForestArena.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefab/Character/Tommy.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Character/Tommy.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefab/Tommy_Idle 1.fbm/Ch09_1001_Normal.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Tommy_Idle 1.fbm/Ch09_1001_Normal.png.meta" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,6 +102,7 @@
       <workItem from="1740060350805" duration="61000" />
       <workItem from="1740125590583" duration="3843000" />
       <workItem from="1740143423536" duration="1669000" />
+      <workItem from="1741773716663" duration="1441000" />
     </task>
     <servers />
   </component>
