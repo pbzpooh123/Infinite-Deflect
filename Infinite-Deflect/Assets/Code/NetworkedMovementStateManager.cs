@@ -36,10 +36,23 @@ public class NetworkedMovementStateManager : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner);
 
+    // Network Variables for Animation Sync
+    private NetworkVariable<float> netMoveMagnitude = new NetworkVariable<float>(
+        0f,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner
+    );
+
+    private NetworkVariable<bool> netIsIdle = new NetworkVariable<bool>(
+        true,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner
+    );
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>(); 
+        animator = GetComponent<Animator>();
 
         if (rb == null)
         {
@@ -72,12 +85,16 @@ public class NetworkedMovementStateManager : NetworkBehaviour
 
         if (!IsOwner)
         {
-            rb.isKinematic = false;
+            rb.isKinematic = true; // Prevents non-owners from affecting physics
             return;
         }
 
         StartCoroutine(WaitForCamera());
         gameObject.tag = "Player";
+
+        // Subscribe to network animation updates
+        netMoveMagnitude.OnValueChanged += OnAnimationChanged;
+        netIsIdle.OnValueChanged += OnAnimationChanged;
     }
 
     private IEnumerator WaitForCamera()
@@ -198,7 +215,7 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     {
         if (!canDeflect || zone == null) return;
 
-        animator.SetTrigger("Hit"); 
+        animator.SetTrigger("Hit");
         zone.SetActive(true);
         StartCoroutine(DeflectCooldown(zone));
     }
@@ -218,9 +235,41 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     {
         if (animator == null) return;
 
-        float moveMagnitude = movementDirection.magnitude;
-        animator.SetFloat("Running", moveMagnitude);
-        animator.SetBool("Idle", moveMagnitude == 0);
+        if (IsOwner)
+        {
+            float moveMagnitude = movementDirection.magnitude;
+            bool isIdle = (moveMagnitude == 0);
+
+            // Update the network variables
+            netMoveMagnitude.Value = moveMagnitude;
+            netIsIdle.Value = isIdle;
+
+            // Set local animation (for the owner)
+            animator.SetFloat("Running", moveMagnitude);
+            animator.SetBool("Idle", isIdle);
+        }
+        else
+        {
+            // Apply synced animation values for non-owners
+            animator.SetFloat("Running", netMoveMagnitude.Value);
+            animator.SetBool("Idle", netIsIdle.Value);
+        }
+    }
+
+    private void OnAnimationChanged(float oldValue, float newValue)
+    {
+        if (!IsOwner && animator != null)
+        {
+            animator.SetFloat("Running", netMoveMagnitude.Value);
+        }
+    }
+
+    private void OnAnimationChanged(bool oldValue, bool newValue)
+    {
+        if (!IsOwner && animator != null)
+        {
+            animator.SetBool("Idle", netIsIdle.Value);
+        }
     }
 
     private void OnDrawGizmos()
