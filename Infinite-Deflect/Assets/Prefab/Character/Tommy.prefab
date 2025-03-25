@@ -350,7 +350,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   moveSpeed: 10
-  jumpForce: 10
+  jumpForce: 5
   groundCheckDistance: 0.27
   groundMask:
     serializedVersion: 2
@@ -359,7 +359,6 @@ MonoBehaviour:
   deflectCooldown: 0.5
   deflectZonePrefab: {fileID: 8416796226681136340, guid: 27e56ff45b48e1a47810d20f4c57a323, type: 3}
   deflectZoneOffset: {x: 0, y: 1, z: 0.5}
-  deflectZoneOffsetF: {x: 0, y: 0, z: 0.5}
 --- !u!114 &-7031707864453027263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -421,7 +420,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &3211239904688973655
 MonoBehaviour:

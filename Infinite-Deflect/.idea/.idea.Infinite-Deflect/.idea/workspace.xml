@@ -7,15 +7,10 @@
     <list default="true" id="9a8fcc8b-49ff-4ac0-b3a6-e75a36f69e8e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Infinite-Deflect/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Infinite-Deflect/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Code/NetworkedMovementStateManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/NetworkedMovementStateManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Model/Character/Ch09_nonPBR@Baseball Strike.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Model/Character/Ch09_nonPBR@Baseball Strike.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Model/Character/Hit2.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Model/Character/Hit2.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Model/Character/Tommy/Hit2.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Model/Character/Tommy/Hit2.fbx.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Model/Character/Tommy/Tommy_HitBall.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Model/Character/Tommy/Tommy_HitBall.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Model/Character/Tommy/Tommy_Jump.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Model/Character/Tommy/Tommy_Jump.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Model/Character/Tommy/Tommy_Run.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Model/Character/Tommy/Tommy_Run.fbx.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Code/SpawnArea.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/SpawnArea.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Prefab/Character/Tommy.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Character/Tommy.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefab/spawn area.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/spawn area.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/ForestArena.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/ForestArena.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/animtion/Player.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/animtion/Player.controller" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -27,7 +22,10 @@
     <setting file="file://$PROJECT_DIR$/Assets/Code/Ball.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Code/PlayerCameraManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Code/SpawnArea.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Code/Teleport.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.dedicated-server@2b38b7e45412/MultiplayerRoles/Editor/GUI/MultiplayerRoleField.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.tools@5e1c41aee6e2/Common/Runtime/Helpers/RuntimeUpdaterBehaviour.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.netcode.gameobjects@f2477a6c90fe/Editor/NetworkObjectEditor.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.multiplayer@888db1d8279d/Runtime/Multiplayer/Lobby/LobbyHandler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@24b10291b18f/Runtime/UGUI/UI/Core/Selectable.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -111,7 +109,12 @@
       <workItem from="1740125590583" duration="3843000" />
       <workItem from="1740143423536" duration="1669000" />
       <workItem from="1741773716663" duration="1441000" />
-      <workItem from="1741775756448" duration="1806000" />
+      <workItem from="1741775756448" duration="2307000" />
+      <workItem from="1742122710716" duration="1470000" />
+      <workItem from="1742153964460" duration="2569000" />
+      <workItem from="1742321050298" duration="313000" />
+      <workItem from="1742704733102" duration="1483000" />
+      <workItem from="1742891950886" duration="1728000" />
     </task>
     <servers />
   </component>

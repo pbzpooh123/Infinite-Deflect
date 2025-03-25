@@ -15,86 +15,46 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     [SerializeField] private float deflectCooldown = 0.5f;
     [SerializeField] private GameObject deflectZonePrefab;
     [SerializeField] private Vector3 deflectZoneOffset = new Vector3(0, 1f, 0.5f);
-    [SerializeField] private Vector3 deflectZoneOffsetF = new Vector3(0, 0f, 0.5f);
 
     private Rigidbody rb;
     private Vector3 movementDirection;
     private bool isGrounded;
     private bool canDeflect = true;
     private GameObject deflectZone;
-    private GameObject deflectZoneF;
     private Transform cameraTransform;
     private Animator animator;
 
     private NetworkVariable<Vector3> netPosition = new NetworkVariable<Vector3>(
-        default,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner);
+        default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     private NetworkVariable<Quaternion> netRotation = new NetworkVariable<Quaternion>(
-        default,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner);
+        default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
-    // Network Variables for Animation Sync
     private NetworkVariable<float> netMoveMagnitude = new NetworkVariable<float>(
-        0f,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner
-    );
+        0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private NetworkVariable<bool> netIsIdle = new NetworkVariable<bool>(
-        true,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Owner
-    );
+        true, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
+    
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
-
-        if (rb == null)
-        {
-            Debug.LogError("Rigidbody component is missing!");
-            enabled = false;
-            return;
-        }
-
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
-        rb.interpolation = RigidbodyInterpolation.Interpolate;
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
-
-    private void Start()
-    {
-        // Instantiate deflect zones once
-        if (deflectZonePrefab != null)
-        {
-            deflectZone = Instantiate(deflectZonePrefab, transform.position + deflectZoneOffset, Quaternion.identity, transform);
-            deflectZone.SetActive(false);
-
-            deflectZoneF = Instantiate(deflectZonePrefab, transform.position + deflectZoneOffsetF, Quaternion.identity, transform);
-            deflectZoneF.SetActive(false);
-        }
-    }
-
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
 
         if (!IsOwner)
         {
-            rb.isKinematic = true; // Prevents non-owners from affecting physics
-            return;
+            rb.isKinematic = true;
         }
 
         StartCoroutine(WaitForCamera());
-        gameObject.tag = "Player";
 
-        // Subscribe to network animation updates
-        netMoveMagnitude.OnValueChanged += OnAnimationChanged;
-        netIsIdle.OnValueChanged += OnAnimationChanged;
+        netMoveMagnitude.OnValueChanged += OnMoveMagnitudeChanged;
+        netIsIdle.OnValueChanged += OnIsIdleChanged;
     }
 
     private IEnumerator WaitForCamera()
@@ -193,21 +153,18 @@ public class NetworkedMovementStateManager : NetworkBehaviour
         if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            animator.SetTrigger("Jump");
+            RequestAnimationTriggerServerRpc("Jump");
         }
     }
 
     private void HandleDeflect()
     {
-        if (!canDeflect) return;
+        if (!canDeflect || deflectZone == null) return;
 
-        if (Input.GetMouseButtonDown(0) && deflectZone != null)
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetMouseButtonDown(0))
         {
+            RequestAnimationTriggerServerRpc("Hit");
             ActivateDeflect(deflectZone);
-        }
-        else if (Input.GetKeyDown(KeyCode.F) && deflectZoneF != null)
-        {
-            ActivateDeflect(deflectZoneF);
         }
     }
 
@@ -215,7 +172,6 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     {
         if (!canDeflect || zone == null) return;
 
-        animator.SetTrigger("Hit");
         zone.SetActive(true);
         StartCoroutine(DeflectCooldown(zone));
     }
@@ -223,10 +179,8 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     private IEnumerator DeflectCooldown(GameObject zone)
     {
         canDeflect = false;
-
         yield return new WaitForSeconds(0.2f);
         zone.SetActive(false);
-
         yield return new WaitForSeconds(deflectCooldown);
         canDeflect = true;
     }
@@ -235,41 +189,48 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     {
         if (animator == null) return;
 
+        float moveMagnitude = movementDirection.magnitude;
+        bool isIdle = (moveMagnitude == 0);
+
         if (IsOwner)
         {
-            float moveMagnitude = movementDirection.magnitude;
-            bool isIdle = (moveMagnitude == 0);
+            RequestAnimationUpdateServerRpc(moveMagnitude, isIdle);
 
-            // Update the network variables
-            netMoveMagnitude.Value = moveMagnitude;
-            netIsIdle.Value = isIdle;
-
-            // Set local animation (for the owner)
             animator.SetFloat("Running", moveMagnitude);
-            animator.SetBool("Idle", isIdle);
-        }
-        else
-        {
-            // Apply synced animation values for non-owners
-            animator.SetFloat("Running", netMoveMagnitude.Value);
-            animator.SetBool("Idle", netIsIdle.Value);
+            animator.SetBool("IsIdle", isIdle);
         }
     }
 
-    private void OnAnimationChanged(float oldValue, float newValue)
+    [ServerRpc]
+    private void RequestAnimationUpdateServerRpc(float moveMagnitude, bool isIdle)
     {
-        if (!IsOwner && animator != null)
+        netMoveMagnitude.Value = moveMagnitude;
+        netIsIdle.Value = isIdle;
+    }
+
+    [ServerRpc]
+    private void RequestAnimationTriggerServerRpc(string triggerName)
+    {
+        PlayAnimationTriggerClientRpc(triggerName);
+    }
+
+    [ClientRpc]
+    private void PlayAnimationTriggerClientRpc(string triggerName)
+    {
+        if (animator != null)
         {
-            animator.SetFloat("Running", netMoveMagnitude.Value);
+            animator.SetTrigger(triggerName);
         }
     }
 
-    private void OnAnimationChanged(bool oldValue, bool newValue)
+    private void OnMoveMagnitudeChanged(float oldValue, float newValue)
     {
-        if (!IsOwner && animator != null)
-        {
-            animator.SetBool("Idle", netIsIdle.Value);
-        }
+        animator.SetFloat("Running", newValue);
+    }
+
+    private void OnIsIdleChanged(bool oldValue, bool newValue)
+    {
+        animator.SetBool("IsIdle", newValue);
     }
 
     private void OnDrawGizmos()
