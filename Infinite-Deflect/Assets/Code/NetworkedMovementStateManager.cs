@@ -25,36 +25,66 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     private Animator animator;
 
     private NetworkVariable<Vector3> netPosition = new NetworkVariable<Vector3>(
-        default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        default,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner);
 
     private NetworkVariable<Quaternion> netRotation = new NetworkVariable<Quaternion>(
-        default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        default,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner);
 
+    // Network Variables for Animation Sync
     private NetworkVariable<float> netMoveMagnitude = new NetworkVariable<float>(
-        0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        0f,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner
+    );
 
     private NetworkVariable<bool> netIsIdle = new NetworkVariable<bool>(
-        true, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        true,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner
+    );
 
-    
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+
+        if (rb == null)
+        {
+            Debug.LogError("Rigidbody component is missing!");
+            enabled = false;
+            return;
+        }
+
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
+
+    private void Start()
+    {
+        
+    }
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
 
         if (!IsOwner)
         {
-            rb.isKinematic = true;
+            rb.isKinematic = true; // Prevents non-owners from affecting physics
+            return;
         }
 
         StartCoroutine(WaitForCamera());
+        gameObject.tag = "Player";
 
-        netMoveMagnitude.OnValueChanged += OnMoveMagnitudeChanged;
-        netIsIdle.OnValueChanged += OnIsIdleChanged;
+        // Subscribe to network animation updates
+        netMoveMagnitude.OnValueChanged += OnAnimationChanged;
+        netIsIdle.OnValueChanged += OnAnimationChanged;
     }
 
     private IEnumerator WaitForCamera()
@@ -78,6 +108,7 @@ public class NetworkedMovementStateManager : NetworkBehaviour
             GetDirection();
             CheckGrounded();
             HandleJump();
+            HandleAttack(); 
             HandleDeflect();
             UpdateAnimation();
         }
@@ -153,7 +184,30 @@ public class NetworkedMovementStateManager : NetworkBehaviour
         if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            RequestAnimationTriggerServerRpc("Jump");
+            animator.SetTrigger("Jump");
+        }
+    }
+
+    private void HandleAttack()
+    {
+        if (Input.GetMouseButtonDown(0)) 
+        {
+            PlayAttackAnimationServerRpc();
+        }
+    }
+
+    [ServerRpc]
+    private void PlayAttackAnimationServerRpc()
+    {
+        PlayAttackAnimationClientRpc();
+    }
+
+    [ClientRpc]
+    private void PlayAttackAnimationClientRpc()
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger("Hit"); 
         }
     }
 
@@ -161,9 +215,8 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     {
         if (!canDeflect || deflectZone == null) return;
 
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            RequestAnimationTriggerServerRpc("Hit");
             ActivateDeflect(deflectZone);
         }
     }
@@ -172,6 +225,8 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     {
         if (!canDeflect || zone == null) return;
 
+        animator.SetTrigger("Hit"); 
+        PlayAttackAnimationServerRpc(); 
         zone.SetActive(true);
         StartCoroutine(DeflectCooldown(zone));
     }
@@ -179,8 +234,10 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     private IEnumerator DeflectCooldown(GameObject zone)
     {
         canDeflect = false;
+
         yield return new WaitForSeconds(0.2f);
         zone.SetActive(false);
+
         yield return new WaitForSeconds(deflectCooldown);
         canDeflect = true;
     }
@@ -189,53 +246,40 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     {
         if (animator == null) return;
 
-        float moveMagnitude = movementDirection.magnitude;
-        bool isIdle = (moveMagnitude == 0);
-
         if (IsOwner)
         {
-            RequestAnimationUpdateServerRpc(moveMagnitude, isIdle);
+            float moveMagnitude = movementDirection.magnitude;
+            bool isIdle = (moveMagnitude == 0);
 
+            // Update the network variables
+            netMoveMagnitude.Value = moveMagnitude;
+            netIsIdle.Value = isIdle;
+
+            // Set local animation (for the owner)
             animator.SetFloat("Running", moveMagnitude);
             animator.SetBool("IsIdle", isIdle);
         }
-    }
-
-    [ServerRpc]
-    private void RequestAnimationUpdateServerRpc(float moveMagnitude, bool isIdle)
-    {
-        netMoveMagnitude.Value = moveMagnitude;
-        netIsIdle.Value = isIdle;
-    }
-
-    [ServerRpc]
-    private void RequestAnimationTriggerServerRpc(string triggerName)
-    {
-        PlayAnimationTriggerClientRpc(triggerName);
-    }
-
-    [ClientRpc]
-    private void PlayAnimationTriggerClientRpc(string triggerName)
-    {
-        if (animator != null)
+        else
         {
-            animator.SetTrigger(triggerName);
+            // Apply synced animation values for non-owners
+            animator.SetFloat("Running", netMoveMagnitude.Value);
+            animator.SetBool("IsIdle", netIsIdle.Value);
         }
     }
 
-    private void OnMoveMagnitudeChanged(float oldValue, float newValue)
+    private void OnAnimationChanged(float oldValue, float newValue)
     {
-        animator.SetFloat("Running", newValue);
+        if (!IsOwner && animator != null)
+        {
+            animator.SetFloat("Running", netMoveMagnitude.Value);
+        }
     }
 
-    private void OnIsIdleChanged(bool oldValue, bool newValue)
+    private void OnAnimationChanged(bool oldValue, bool newValue)
     {
-        animator.SetBool("IsIdle", newValue);
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position + Vector3.down * groundCheckDistance, 0.5f);
+        if (!IsOwner && animator != null)
+        {
+            animator.SetBool("IsIdle", netIsIdle.Value);
+        }
     }
 }

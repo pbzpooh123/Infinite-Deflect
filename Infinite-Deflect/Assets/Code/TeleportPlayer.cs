@@ -25,6 +25,7 @@ public class TeleportHandler : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"[TeleportHandler] Player entered: {other.name}");
         if (other.CompareTag("Player") && other.TryGetComponent(out NetworkObject networkObject))
         {
             if (IsServer) // Only the server registers players
@@ -36,12 +37,31 @@ public class TeleportHandler : NetworkBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        Debug.Log($"[TeleportHandler] Player exited: {other.name}");
         if (other.CompareTag("Player") && other.TryGetComponent(out NetworkObject networkObject))
         {
             if (IsServer)
             {
-                UnregisterPlayerServerRpc(networkObject.OwnerClientId);
+                StartCoroutine(DelayedUnregister(networkObject.OwnerClientId));
             }
+        }
+    }
+
+    private IEnumerator DelayedUnregister(ulong clientId)
+    {
+        yield return new WaitForSeconds(0.2f); // Small delay to prevent accidental removal due to physics issues
+
+        if (!registeredPlayers.Contains(clientId)) yield break; // Ensure the player was still in the list
+
+        registeredPlayers.Remove(clientId);
+        Debug.Log($"[TeleportHandler] Player {clientId} left. Remaining: {registeredPlayers.Count}");
+
+        if (registeredPlayers.Count < 2)
+        {
+            StopCoroutine(TeleportCountdown());
+            isCountdownActive = false;
+            syncedCountdownTime.Value = 0;
+            Debug.Log("[TeleportHandler] Not enough players! Countdown stopped.");
         }
     }
 
