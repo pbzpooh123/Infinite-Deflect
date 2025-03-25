@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using Unity.Netcode.Components;
 
 public class TeleportHandler : NetworkBehaviour
 {
@@ -25,77 +26,45 @@ public class TeleportHandler : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"[TeleportHandler] Player entered: {other.name}");
+        if (!IsServer) return; // Only the server handles player registration
+
         if (other.CompareTag("Player") && other.TryGetComponent(out NetworkObject networkObject))
         {
-            if (IsServer) // Only the server registers players
+            ulong clientId = networkObject.OwnerClientId;
+            
+            if (!registeredPlayers.Contains(clientId))
             {
-                RegisterPlayerServerRpc(networkObject.OwnerClientId);
+                registeredPlayers.Add(clientId);
+                Debug.Log($"[TeleportHandler] Player {clientId} ENTERED. Total Players: {registeredPlayers.Count}");
+
+                if (!isCountdownActive && registeredPlayers.Count == 1)
+                {
+                    StartCoroutine(TeleportCountdown());
+                }
             }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log($"[TeleportHandler] Player exited: {other.name}");
+        if (!IsServer) return; // Only the server handles player removal
+
         if (other.CompareTag("Player") && other.TryGetComponent(out NetworkObject networkObject))
         {
-            if (IsServer)
+            ulong clientId = networkObject.OwnerClientId;
+
+            if (registeredPlayers.Contains(clientId))
             {
-                StartCoroutine(DelayedUnregister(networkObject.OwnerClientId));
-            }
-        }
-    }
+                registeredPlayers.Remove(clientId);
+                Debug.Log($"[TeleportHandler] Player {clientId} EXITED. Remaining Players: {registeredPlayers.Count}");
 
-    private IEnumerator DelayedUnregister(ulong clientId)
-    {
-        yield return new WaitForSeconds(0.2f); // Small delay to prevent accidental removal due to physics issues
-
-        if (!registeredPlayers.Contains(clientId)) yield break; // Ensure the player was still in the list
-
-        registeredPlayers.Remove(clientId);
-        Debug.Log($"[TeleportHandler] Player {clientId} left. Remaining: {registeredPlayers.Count}");
-
-        if (registeredPlayers.Count < 2)
-        {
-            StopCoroutine(TeleportCountdown());
-            isCountdownActive = false;
-            syncedCountdownTime.Value = 0;
-            Debug.Log("[TeleportHandler] Not enough players! Countdown stopped.");
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void RegisterPlayerServerRpc(ulong clientId)
-    {
-        if (!registeredPlayers.Contains(clientId))
-        {
-            registeredPlayers.Add(clientId);
-            Debug.Log($"[TeleportHandler] Player {clientId} registered. Total: {registeredPlayers.Count}");
-
-            // Start countdown if it's not already running
-            if (!isCountdownActive && registeredPlayers.Count == 1)
-            {
-                StartCoroutine(TeleportCountdown());
-            }
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void UnregisterPlayerServerRpc(ulong clientId)
-    {
-        if (registeredPlayers.Contains(clientId))
-        {
-            registeredPlayers.Remove(clientId);
-            Debug.Log($"[TeleportHandler] Player {clientId} left. Remaining: {registeredPlayers.Count}");
-
-            // Stop countdown if no players remain
-            if (registeredPlayers.Count < 2)
-            {
-                StopCoroutine(TeleportCountdown());
-                isCountdownActive = false;
-                syncedCountdownTime.Value = 0; // Reset UI
-                Debug.Log("[TeleportHandler] Not enough players! Countdown stopped.");
+                if (registeredPlayers.Count < 2)
+                {
+                    StopAllCoroutines();
+                    isCountdownActive = false;
+                    syncedCountdownTime.Value = 0;
+                    Debug.Log("[TeleportHandler] Countdown stopped due to insufficient players.");
+                }
             }
         }
     }
@@ -103,25 +72,17 @@ public class TeleportHandler : NetworkBehaviour
     private IEnumerator TeleportCountdown()
     {
         isCountdownActive = true;
-        syncedCountdownTime.Value = countdownTime; // Sync timer start
+        syncedCountdownTime.Value = countdownTime;
         Debug.Log("[TeleportHandler] Countdown started!");
 
         while (syncedCountdownTime.Value > 0)
         {
             yield return new WaitForSeconds(1f);
             syncedCountdownTime.Value -= 1f;
-
-            // If all players leave, cancel teleport
-            if (registeredPlayers.Count < 2)
-            {
-                Debug.Log("[TeleportHandler] Not enough players! Countdown stopped.");
-                isCountdownActive = false;
-                syncedCountdownTime.Value = 0; // Reset UI
-                yield break; // Stop coroutine
-            }
+            Debug.Log($"[TeleportHandler] Countdown: {syncedCountdownTime.Value}s - Players: {registeredPlayers.Count}");
         }
 
-        countdownText.gameObject.SetActive(false); // Hide UI
+        countdownText.gameObject.SetActive(false);
 
         if (registeredPlayers.Count >= 2)
         {
@@ -137,10 +98,9 @@ public class TeleportHandler : NetworkBehaviour
         }
         else
         {
-            Debug.Log("[TeleportHandler] Not enough players to teleport.");
+            Debug.Log("[TeleportHandler] Countdown finished, but not enough players. No teleport.");
         }
 
-        // Reset for next teleport
         registeredPlayers.Clear();
         isCountdownActive = false;
     }
@@ -157,8 +117,18 @@ public class TeleportHandler : NetworkBehaviour
             var playerObject = client.PlayerObject;
             if (playerObject != null)
             {
-                Debug.Log($"[TeleportHandler] Teleporting ClientID {clientId} to {randomPoint.position}");
-                TeleportClientRpc(randomPoint.position, randomPoint.rotation, clientId);
+                Debug.Log($"[TeleportHandler] Attempting to teleport ClientID {clientId} to {randomPoint.position}");
+
+                // Disable NetworkTransform temporarily
+                var networkTransform = playerObject.GetComponent<NetworkTransform>();
+                if (networkTransform != null)
+                {
+                    // Disable interpolation and synchronization
+                    networkTransform.Interpolate = false;
+                }
+
+                // Force teleport on the server
+                ForcePlayerTeleportClientRpc(randomPoint.position, randomPoint.rotation, clientId);
             }
             else
             {
@@ -172,21 +142,71 @@ public class TeleportHandler : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void TeleportClientRpc(Vector3 position, Quaternion rotation, ulong targetClientId)
+    private void ForcePlayerTeleportClientRpc(Vector3 position, Quaternion rotation, ulong targetClientId)
     {
-        if (NetworkManager.Singleton.LocalClientId == targetClientId) // Only teleport the intended player
+        // Only update for the specific client
+        if (NetworkManager.Singleton.LocalClientId == targetClientId)
         {
-            var player = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
-            if (player != null)
+            var localPlayerObject = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
+            if (localPlayerObject != null)
             {
-                Debug.Log($"[TeleportHandler] Teleporting Local Player {targetClientId} to {position}");
-                player.transform.position = position;
-                player.transform.rotation = rotation;
+                Debug.Log($"[TeleportHandler] Forcing Local Player {targetClientId} teleport to {position}");
+
+                // Get all components that might interfere with positioning
+                var networkTransform = localPlayerObject.GetComponent<NetworkTransform>();
+                var characterController = localPlayerObject.GetComponent<CharacterController>();
+                var rigidbody = localPlayerObject.GetComponent<Rigidbody>();
+
+                // Disable movement components temporarily
+                if (networkTransform != null)
+                {
+                    networkTransform.Interpolate = false;
+                }
+
+                if (characterController != null)
+                {
+                    characterController.enabled = false;
+                }
+
+                if (rigidbody != null)
+                {
+                    rigidbody.isKinematic = true;
+                }
+
+                // Directly set position
+                localPlayerObject.transform.SetPositionAndRotation(position, rotation);
+
+                // Re-enable components after a short delay
+                StartCoroutine(ReenableMovementComponents(localPlayerObject, networkTransform, characterController, rigidbody));
             }
             else
             {
                 Debug.LogError("[TeleportHandler] Local Player object not found!");
             }
+        }
+    }
+
+    private IEnumerator ReenableMovementComponents(NetworkObject playerObject, 
+        NetworkTransform networkTransform, 
+        CharacterController characterController, 
+        Rigidbody rigidbody)
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        // Re-enable components
+        if (networkTransform != null)
+        {
+            networkTransform.Interpolate = true;
+        }
+
+        if (characterController != null)
+        {
+            characterController.enabled = true;
+        }
+
+        if (rigidbody != null)
+        {
+            rigidbody.isKinematic = false;
         }
     }
 
