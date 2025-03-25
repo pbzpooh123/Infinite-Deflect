@@ -176,6 +176,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  initialSpeed: 10
-  speedIncreasePercentage: 10
+  initialSpeed: 5
+  speedIncreasePercentage: 5
   minTimeBetweenTargetChanges: 0.1
