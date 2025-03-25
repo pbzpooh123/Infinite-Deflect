@@ -9,8 +9,8 @@ public class GameBall : NetworkBehaviour
     [SerializeField] private float initialSpeed = 10f;
     [SerializeField] private float speedIncreasePercentage = 10f;
     [SerializeField] private float minTimeBetweenTargetChanges = 0.1f;
-    
-    // Networked speed value so all clients know the current speed
+    [SerializeField] private int ballDamage = 1; // Damage dealt to players
+
     private NetworkVariable<float> currentSpeed = new NetworkVariable<float>();
     private Rigidbody rb;
 
@@ -38,20 +38,15 @@ public class GameBall : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        // Find all players in the game
         var players = FindObjectsOfType<NetworkObject>()
             .Where(no => no.CompareTag("Player"))
             .ToList();
         
         if (players.Count == 0) return;
 
-        // Pick a random player to target
         var targetPlayer = players[Random.Range(0, players.Count)];
-        
-        // Calculate direction to the chosen player
         Vector3 direction = (targetPlayer.transform.position - transform.position).normalized;
         
-        // Set the ball's velocity
         rb.linearVelocity = direction * currentSpeed.Value;
     }
 
@@ -59,31 +54,32 @@ public class GameBall : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        // If ball hits a player directly
         if (collision.gameObject.CompareTag("Player"))
         {
-            // Increase speed by percentage
-            float speedIncrease = currentSpeed.Value * (speedIncreasePercentage / 100f);
-            currentSpeed.Value += speedIncrease;
-            
-            // Find new target
+            // Apply damage to the player
+            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamageServerRpc(ballDamage);
+            }
+
+            // Reset ball speed to original
+            currentSpeed.Value = initialSpeed;
+
+            // Pick a new target
             SelectNewTarget();
         }
-        // If ball hits a player's deflect zone
         else if (collision.gameObject.CompareTag("PlayerDeflect"))
         {
-            // Calculate deflection direction
             Vector3 deflectDirection = Vector3.Reflect(
                 rb.linearVelocity.normalized, 
                 collision.contacts[0].normal
             );
             
-            // Apply deflected velocity
             rb.linearVelocity = deflectDirection * currentSpeed.Value;
         }
     }
 
-    // Optional: Add method to reset ball speed
     [ServerRpc(RequireOwnership = false)]
     public void ResetBallServerRpc()
     {
@@ -92,7 +88,6 @@ public class GameBall : NetworkBehaviour
         SelectNewTarget();
     }
 
-    // Optional: Add method to get current speed (useful for UI or other mechanics)
     public float GetCurrentSpeed()
     {
         return currentSpeed.Value;
