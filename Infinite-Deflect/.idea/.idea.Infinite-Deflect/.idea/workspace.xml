@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9a8fcc8b-49ff-4ac0-b3a6-e75a36f69e8e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Infinite-Deflect/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Infinite-Deflect/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/Ball.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Ball.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/SpawnArea.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/SpawnArea.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/TeleportPlayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/TeleportPlayer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefab/Character/Tommy.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Character/Tommy.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/ForestArena.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/ForestArena.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefab/Ball.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Ball.prefab" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,7 +115,7 @@
       <workItem from="1742891950886" duration="2213000" />
       <workItem from="1742894264674" duration="870000" />
       <workItem from="1742926617988" duration="2953000" />
-      <workItem from="1743337466890" duration="1351000" />
+      <workItem from="1743337466890" duration="1683000" />
     </task>
     <servers />
   </component>
