@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 public class GameBall : NetworkBehaviour
@@ -8,7 +9,7 @@ public class GameBall : NetworkBehaviour
     [Header("Ball Settings")]
     [SerializeField] private float initialSpeed = 10f;
     [SerializeField] private float speedIncreasePercentage = 10f;
-    [SerializeField] private float minTimeBetweenTargetChanges = 0.1f;
+    [SerializeField] private float minTimeBetweenTargetChanges = 0.5f;
     [SerializeField] private int ballDamage = 1; // Damage dealt to players
 
     private NetworkVariable<float> currentSpeed = new NetworkVariable<float>();
@@ -17,11 +18,12 @@ public class GameBall : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         rb = GetComponent<Rigidbody>();
-        
+
         if (IsServer)
         {
             currentSpeed.Value = initialSpeed;
             StartCoroutine(SelectNewTargetCoroutine());
+            SelectNewTarget(); // Start moving immediately
         }
     }
 
@@ -38,45 +40,53 @@ public class GameBall : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        var players = FindObjectsOfType<NetworkObject>()
-            .Where(no => no.CompareTag("Player"))
+        // Find all connected players
+        List<NetworkObject> players = NetworkManager.Singleton.ConnectedClients
+            .Select<KeyValuePair<ulong, NetworkClient>, NetworkObject>(client => client.Value.PlayerObject)
+            .Where(player => player != null && player.CompareTag("Player"))
             .ToList();
-        
-        if (players.Count == 0) return;
 
-        var targetPlayer = players[Random.Range(0, players.Count)];
+        if (players.Count == 0)
+        {
+            rb.velocity = Vector3.zero;
+            return;
+        }
+
+        // Pick a random player to target
+        NetworkObject targetPlayer = players[Random.Range(0, players.Count)];
+
+        // Calculate direction
         Vector3 direction = (targetPlayer.transform.position - transform.position).normalized;
-        
-        rb.linearVelocity = direction * currentSpeed.Value;
+
+        // Apply velocity
+        rb.velocity = direction * currentSpeed.Value;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (!IsServer) return;
 
+        // If ball hits a player directly
         if (collision.gameObject.CompareTag("Player"))
         {
-            // Apply damage to the player
             PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
                 playerHealth.TakeDamageServerRpc(ballDamage);
             }
 
-            // Reset ball speed to original
-            currentSpeed.Value = initialSpeed;
+            // Increase speed by percentage
+            float speedIncrease = currentSpeed.Value * (speedIncreasePercentage / 100f);
+            currentSpeed.Value += speedIncrease;
 
-            // Pick a new target
+            // Pick new target
             SelectNewTarget();
         }
+        // If ball hits a player's deflect zone
         else if (collision.gameObject.CompareTag("PlayerDeflect"))
         {
-            Vector3 deflectDirection = Vector3.Reflect(
-                rb.linearVelocity.normalized, 
-                collision.contacts[0].normal
-            );
-            
-            rb.linearVelocity = deflectDirection * currentSpeed.Value;
+            Vector3 deflectDirection = Vector3.Reflect(rb.velocity.normalized, collision.contacts[0].normal);
+            rb.velocity = deflectDirection * currentSpeed.Value;
         }
     }
 

@@ -95,6 +95,7 @@ public class TeleportHandler : NetworkBehaviour
             }
 
             ballSpawner?.TrySpawnBall(transform.position, registeredPlayers.Count);
+            Debug.Log("SPwanball");
         }
         else
         {
