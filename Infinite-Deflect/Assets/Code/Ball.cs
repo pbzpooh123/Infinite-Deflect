@@ -48,7 +48,7 @@ public class GameBall : NetworkBehaviour
 
         if (players.Count == 0)
         {
-            rb.velocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
             return;
         }
 
@@ -59,7 +59,7 @@ public class GameBall : NetworkBehaviour
         Vector3 direction = (targetPlayer.transform.position - transform.position).normalized;
 
         // Apply velocity
-        rb.velocity = direction * currentSpeed.Value;
+        rb.linearVelocity = direction * currentSpeed.Value;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -85,8 +85,8 @@ public class GameBall : NetworkBehaviour
         // If ball hits a player's deflect zone
         else if (collision.gameObject.CompareTag("PlayerDeflect"))
         {
-            Vector3 deflectDirection = Vector3.Reflect(rb.velocity.normalized, collision.contacts[0].normal);
-            rb.velocity = deflectDirection * currentSpeed.Value;
+            Vector3 deflectDirection = Vector3.Reflect(rb.linearVelocity.normalized, collision.contacts[0].normal);
+            rb.linearVelocity = deflectDirection * currentSpeed.Value;
         }
     }
 
