@@ -10,11 +10,15 @@ public class SpawnArea : NetworkBehaviour
     public float checkRadius = 10f; // Radius to check for players in the play zone
     public Color gizmoColor = new Color(0f, 1f, 0f, 0.3f); // Color of the gizmo sphere
 
-    public void TrySpawnBall(Vector3 spawnPosition, int teleportedPlayers)
+    [Header("Spawn Settings")]
+    public Transform[] spawnPoints; // Array of predefined spawn points
+
+    public void TrySpawnBall(Vector3 spawnPosition,int teleportedPlayers)
     {
-        if (teleportedPlayers >= 2) // Only spawn if at least 2 players teleported
+        if (teleportedPlayers >= 2 && spawnPoints.Length > 0)
         {
-            StartCoroutine(SpawnBallAfterDelay(spawnPosition));
+            Transform chosenSpawn = spawnPoints[Random.Range(0, spawnPoints.Length)];
+            StartCoroutine(SpawnBallAfterDelay(chosenSpawn.position));
         }
     }
 
@@ -22,7 +26,7 @@ public class SpawnArea : NetworkBehaviour
     {
         yield return new WaitForSeconds(ballSpawnDelay);
 
-        GameObject ball = Instantiate(ballPrefab, spawnPosition + Vector3.up * 2, Quaternion.identity);
+        GameObject ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
 
         if (ball.TryGetComponent(out NetworkObject networkObject))
         {

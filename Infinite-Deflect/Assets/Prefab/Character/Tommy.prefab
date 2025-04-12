@@ -226,13 +226,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 20af8d653109f694ca4e6a0b1cb3da11, type: 2}
     - target: {fileID: 5866666021909216657, guid: 92a79f2dbc66cb842be515f709a58b7e, type: 3}
       propertyPath: m_WarningMessage
-      value: "\nBinding warning: Some generic clip(s) animate transforms that are
-        already bound by a Humanoid avatar. These transforms can only be changed
-        by Humanoid clips.\n\tTransform 'mixamorig6:Hips'\n\tTransform 'mixamorig6:RightForeArm'\n\tTransform
-        'mixamorig6:Neck'\n\tTransform 'mixamorig6:RightToeBase'\n\tTransform 'mixamorig6:LeftHandPinky2'\n\tTransform
-        'mixamorig6:LeftToeBase'\n\tTransform 'mixamorig6:RightShoulder'\n\tTransform
-        'mixamorig6:Spine1'\n\tTransform 'mixamorig6:LeftShoulder'\n\tTransform 'mixamorig6:Hips'\n\tand
-        more ...\n\tFrom animation clip 'Tommy_HitBall'"
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 92a79f2dbc66cb842be515f709a58b7e, type: 3}
       propertyPath: m_ApplyRootMotion
@@ -310,8 +304,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.97
-  m_Height: 3.48
+  m_Radius: 0.45
+  m_Height: 3.57
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0.16}
 --- !u!114 &6712165144517267866
