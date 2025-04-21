@@ -478,7 +478,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  maxHealth: 3
+  maxHealth: 1
   playerModel: {fileID: 4407876034128565437}
   playerCollider: {fileID: 4407876034128565437}
 --- !u!95 &6953583792904557693 stripped
