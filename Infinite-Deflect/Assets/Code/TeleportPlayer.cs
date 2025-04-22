@@ -10,7 +10,9 @@ public class TeleportHandler : NetworkBehaviour
     public Transform[] teleportLocations; // List of teleport points
     public SpawnArea ballSpawner; // Reference to the BallSpawner component
     public float countdownTime = 5f; // Time for players to step into the teleport zone
-    public TextMeshProUGUI countdownText; // UI text for countdown
+    public float soloCountdownTime = 30f; // Time to wait if only one player is alive
+    public TextMeshProUGUI countdownText; // UI text for group countdown
+    public TextMeshProUGUI soloCountdownText; // UI text for solo countdown
 
     private HashSet<ulong> registeredPlayers = new HashSet<ulong>();
     private bool isCountdownActive = false;
@@ -19,20 +21,11 @@ public class TeleportHandler : NetworkBehaviour
         0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server
     );
 
-    private Coroutine soloTeleportCoroutine = null;
-    private float soloTeleportDelay = 30f;
+    private Coroutine soloTeleportCoroutine;
 
     private void Start()
     {
         syncedCountdownTime.OnValueChanged += UpdateCountdownUI;
-    }
-
-    private void Update()
-    {
-        if (IsServer)
-        {
-            CheckForSoloPlayer();
-        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -48,7 +41,7 @@ public class TeleportHandler : NetworkBehaviour
                 registeredPlayers.Add(clientId);
                 Debug.Log($"[TeleportHandler] Player {clientId} ENTERED. Total Players: {registeredPlayers.Count}");
 
-                if (!isCountdownActive && registeredPlayers.Count == 1)
+                if (registeredPlayers.Count == 1 && !isCountdownActive)
                 {
                     StartCoroutine(TeleportCountdown());
                 }
@@ -74,6 +67,7 @@ public class TeleportHandler : NetworkBehaviour
                     StopAllCoroutines();
                     isCountdownActive = false;
                     syncedCountdownTime.Value = 0;
+                    countdownText.gameObject.SetActive(false);
                     Debug.Log("[TeleportHandler] Countdown stopped due to insufficient players.");
                 }
             }
@@ -109,7 +103,7 @@ public class TeleportHandler : NetworkBehaviour
         }
         else
         {
-            Debug.Log("[TeleportHandler] Countdown finished, but not enough players. No teleport.");
+            Debug.Log("[TeleportHandler] Countdown finished, but not enough players.");
         }
 
         registeredPlayers.Clear();
@@ -128,11 +122,10 @@ public class TeleportHandler : NetworkBehaviour
             var playerObject = client.PlayerObject;
             if (playerObject != null)
             {
+                Debug.Log($"[TeleportHandler] Attempting to teleport ClientID {clientId} to {randomPoint.position}");
+
                 var networkTransform = playerObject.GetComponent<NetworkTransform>();
-                if (networkTransform != null)
-                {
-                    networkTransform.Interpolate = false;
-                }
+                if (networkTransform != null) networkTransform.Interpolate = false;
 
                 ForcePlayerTeleportClientRpc(randomPoint.position, randomPoint.rotation, clientId);
             }
@@ -187,43 +180,58 @@ public class TeleportHandler : NetworkBehaviour
         }
     }
 
-    private void CheckForSoloPlayer()
+    // Called externally when checking player state
+    public void CheckForSoloPlayer()
     {
-        if (soloTeleportCoroutine != null) return;
+        if (!IsServer) return;
 
-        List<NetworkClient> alivePlayers = new List<NetworkClient>();
+        int alivePlayers = 0;
+        ulong lastAliveId = 0;
 
-        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        foreach (var client in NetworkManager.Singleton.ConnectedClients)
         {
-            if (client.PlayerObject != null && client.PlayerObject.IsSpawned)
+            if (client.Value.PlayerObject != null && client.Value.PlayerObject.CompareTag("Player"))
             {
-                // Optional: insert custom alive check
-                alivePlayers.Add(client);
+                alivePlayers++;
+                lastAliveId = client.Key;
             }
         }
 
-        if (alivePlayers.Count == 1)
+        if (alivePlayers == 1 && soloTeleportCoroutine == null)
         {
-            soloTeleportCoroutine = StartCoroutine(SoloTeleportAfterDelay(alivePlayers[0].ClientId));
+            soloTeleportCoroutine = StartCoroutine(SoloTeleportAfterDelay(lastAliveId));
+        }
+        else if (alivePlayers > 1 && soloTeleportCoroutine != null)
+        {
+            StopCoroutine(soloTeleportCoroutine);
+            soloTeleportCoroutine = null;
+            soloCountdownText.gameObject.SetActive(false);
         }
     }
 
     private IEnumerator SoloTeleportAfterDelay(ulong clientId)
     {
-        Debug.Log("[TeleportHandler] Only one player alive. Waiting 30s to teleport.");
+        float timer = soloCountdownTime;
 
-        yield return new WaitForSeconds(soloTeleportDelay);
+        soloCountdownText.gameObject.SetActive(true);
+
+        while (timer > 0)
+        {
+            soloCountdownText.text = $"Returning to spawn in: {timer:F1}s";
+            yield return new WaitForSeconds(1f);
+            timer -= 1f;
+        }
+
+        soloCountdownText.gameObject.SetActive(false);
+        soloTeleportCoroutine = null;
 
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client))
         {
-            var playerObject = client.PlayerObject;
-            if (playerObject != null && playerObject.IsSpawned)
+            if (client.PlayerObject != null)
             {
-                Debug.Log($"[TeleportHandler] Teleporting solo player {clientId} after delay.");
+                Debug.Log($"[TeleportHandler] Solo teleporting player {clientId} back to spawn.");
                 TeleportRequestServerRpc(clientId);
             }
         }
-
-        soloTeleportCoroutine = null;
     }
 }

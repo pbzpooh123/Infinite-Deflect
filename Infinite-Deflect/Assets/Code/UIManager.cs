@@ -1,27 +1,31 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public static UIManager instance;
+    [SerializeField] private GameObject mainMenuPanel;
+    [SerializeField] private GameObject quickCreateSessionWidget;
+    [SerializeField] private GameObject sessionListWidget;
+    [SerializeField] private GameObject canva;
+    [SerializeField] private GameObject Mcanva;
 
-    [SerializeField]
-    private GameObject InMenuPanel;
-
-    private void Awake()
+    public void OnHostButtonClicked()
     {
-        instance = this;
+        mainMenuPanel.SetActive(false);
+        quickCreateSessionWidget.SetActive(true);
+        canva.SetActive(false);
+        Mcanva.SetActive(true);
     }
-    public void ToggleInMenuPanel()
+
+    public void OnJoinButtonClicked()
     {
-        if (!InMenuPanel.activeInHierarchy)
-        {
-            InMenuPanel.SetActive(true);
-            Debug.Log("Active InMenu");
-        }
-        else
-        {
-            InMenuPanel.SetActive(false);
-        }
+        mainMenuPanel.SetActive(false);
+        sessionListWidget.SetActive(true);
+    }
+
+    public void OnBackButtonClicked()
+    {
+        quickCreateSessionWidget.SetActive(false);
+        sessionListWidget.SetActive(false);
+        mainMenuPanel.SetActive(true);
     }
 }
