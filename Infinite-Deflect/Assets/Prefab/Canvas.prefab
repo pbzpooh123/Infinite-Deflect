@@ -562,7 +562,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4257897314810135649}
-  m_Father: {fileID: 6784645080943022853}
+  m_Father: {fileID: 7612387058369633884}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -950,6 +950,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 9174677521089747178}
   - {fileID: 2627120858860436436}
   - {fileID: 4845786702022119807}
   - {fileID: 79737724790187473}
@@ -1712,7 +1713,6 @@ RectTransform:
   m_Children:
   - {fileID: 8231006193276253068}
   - {fileID: 577491954566625191}
-  - {fileID: 9174677521089747178}
   m_Father: {fileID: 6386028402600213299}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2016,6 +2016,8 @@ MonoBehaviour:
   mainMenuPanel: {fileID: 2445315355261337135}
   quickCreateSessionWidget: {fileID: 2519617193515869966}
   sessionListWidget: {fileID: 891568101283823602}
+  canva: {fileID: 0}
+  Mcanva: {fileID: 0}
 --- !u!1 &2537413695217245589
 GameObject:
   m_ObjectHideFlags: 0

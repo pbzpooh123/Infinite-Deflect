@@ -34,7 +34,6 @@ public class NetworkedMovementStateManager : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner);
 
-    // Network Variables for Animation Sync
     private NetworkVariable<float> netMoveMagnitude = new NetworkVariable<float>(
         0f,
         NetworkVariableReadPermission.Everyone,
@@ -46,6 +45,7 @@ public class NetworkedMovementStateManager : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner
     );
+
 
     private void Awake()
     {
@@ -64,27 +64,22 @@ public class NetworkedMovementStateManager : NetworkBehaviour
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
-    private void Start()
-    {
-        
-    }
-
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
 
         if (!IsOwner)
         {
-            rb.isKinematic = true; // Prevents non-owners from affecting physics
+            rb.isKinematic = true;
             return;
         }
 
         StartCoroutine(WaitForCamera());
         gameObject.tag = "Player";
 
-        // Subscribe to network animation updates
-        netMoveMagnitude.OnValueChanged += OnAnimationChanged;
-        netIsIdle.OnValueChanged += OnAnimationChanged;
+        // Subscribe to network animation changes
+        netMoveMagnitude.OnValueChanged += OnMoveMagnitudeChanged;
+        netIsIdle.OnValueChanged += OnIsIdleChanged;
     }
 
     private IEnumerator WaitForCamera()
@@ -110,9 +105,11 @@ public class NetworkedMovementStateManager : NetworkBehaviour
             HandleJump();
             HandleAttack(); 
             HandleDeflect();
-            UpdateAnimation();
         }
-        else
+
+        UpdateAnimation(); // Now updates for everyone
+
+        if (!IsOwner)
         {
             HandleClientMovement();
         }
@@ -129,10 +126,11 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     private void HandleOwnerMovement()
     {
         Vector3 targetVelocity = movementDirection * moveSpeed;
-        Vector3 currentVelocity = rb.linearVelocity;
+        Vector3 currentVelocity = rb.velocity;
         targetVelocity.y = currentVelocity.y;
 
-        rb.linearVelocity = targetVelocity;
+        rb.velocity = targetVelocity;
+
         netPosition.Value = transform.position;
         netRotation.Value = transform.rotation;
     }
@@ -249,37 +247,34 @@ public class NetworkedMovementStateManager : NetworkBehaviour
         if (IsOwner)
         {
             float moveMagnitude = movementDirection.magnitude;
-            bool isIdle = (moveMagnitude == 0);
+            bool isIdle = (moveMagnitude == 0f);
 
-            // Update the network variables
             netMoveMagnitude.Value = moveMagnitude;
             netIsIdle.Value = isIdle;
 
-            // Set local animation (for the owner)
             animator.SetFloat("Running", moveMagnitude);
             animator.SetBool("IsIdle", isIdle);
         }
         else
         {
-            // Apply synced animation values for non-owners
             animator.SetFloat("Running", netMoveMagnitude.Value);
             animator.SetBool("IsIdle", netIsIdle.Value);
         }
     }
 
-    private void OnAnimationChanged(float oldValue, float newValue)
+    private void OnMoveMagnitudeChanged(float oldValue, float newValue)
     {
         if (!IsOwner && animator != null)
         {
-            animator.SetFloat("Running", netMoveMagnitude.Value);
+            animator.SetFloat("Running", newValue);
         }
     }
 
-    private void OnAnimationChanged(bool oldValue, bool newValue)
+    private void OnIsIdleChanged(bool oldValue, bool newValue)
     {
         if (!IsOwner && animator != null)
         {
-            animator.SetBool("IsIdle", netIsIdle.Value);
+            animator.SetBool("IsIdle", newValue);
         }
     }
 }

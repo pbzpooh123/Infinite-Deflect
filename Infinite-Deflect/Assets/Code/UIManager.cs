@@ -28,4 +28,12 @@ public class UIManager : MonoBehaviour
         sessionListWidget.SetActive(false);
         mainMenuPanel.SetActive(true);
     }
+    
+    public void OnjButtonClicked()
+    {
+        quickCreateSessionWidget.SetActive(false);
+        sessionListWidget.SetActive(false);
+        canva.SetActive(false);
+        Mcanva.SetActive(true);
+    }
 }
