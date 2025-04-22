@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class SpawnArea : NetworkBehaviour
 {
+    [Header("Ball Settings")]
     public GameObject ballPrefab; // The ball prefab to spawn
     public float ballSpawnDelay = 5f; // Delay before spawning the ball
     public float checkRadius = 10f; // Radius to check for players in the play zone
@@ -13,7 +14,15 @@ public class SpawnArea : NetworkBehaviour
     [Header("Spawn Settings")]
     public Transform[] spawnPoints; // Array of predefined spawn points
 
-    public void TrySpawnBall(Vector3 spawnPosition,int teleportedPlayers)
+    private GameObject currentBall; // Reference to the currently spawned ball
+
+    /// <summary>
+    /// Attempts to spawn a ball if enough players are in the play zone.
+    /// Destroys the existing ball if one already exists.
+    /// </summary>
+    /// <param name="spawnPosition">Position to consider for spawning (not used directly in this version)</param>
+    /// <param name="teleportedPlayers">Number of players currently in the teleport zone</param>
+    public void TrySpawnBall(Vector3 spawnPosition, int teleportedPlayers)
     {
         if (teleportedPlayers >= 2 && spawnPoints.Length > 0)
         {
@@ -26,17 +35,28 @@ public class SpawnArea : NetworkBehaviour
     {
         yield return new WaitForSeconds(ballSpawnDelay);
 
-        GameObject ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
-
-        if (ball.TryGetComponent(out NetworkObject networkObject))
+        // Destroy the old ball if it exists
+        if (currentBall != null && currentBall.TryGetComponent(out NetworkObject oldNetObj))
         {
-            networkObject.Spawn(); // Spawn the ball on the network
+            if (IsServer)
+            {
+                oldNetObj.Despawn(true); // Despawn and destroy the object across the network
+            }
+        }
+
+        // Spawn a new ball
+        GameObject newBall = Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
+
+        if (newBall.TryGetComponent(out NetworkObject newNetObj))
+        {
+            newNetObj.Spawn();
+            currentBall = newBall;
         }
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = gizmoColor;
-        Gizmos.DrawSphere(transform.position, checkRadius); // Draw the check radius sphere in the Scene view
+        Gizmos.DrawSphere(transform.position, checkRadius); // Visual debug radius
     }
 }

@@ -12,26 +12,37 @@ public class TeleportHandler : NetworkBehaviour
     public float countdownTime = 5f; // Time for players to step into the teleport zone
     public TextMeshProUGUI countdownText; // UI text for countdown
 
-    private HashSet<ulong> registeredPlayers = new HashSet<ulong>(); // Players who stepped in
-    private bool isCountdownActive = false; // Prevents multiple countdowns
+    private HashSet<ulong> registeredPlayers = new HashSet<ulong>();
+    private bool isCountdownActive = false;
 
     private NetworkVariable<float> syncedCountdownTime = new NetworkVariable<float>(
         0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server
     );
+
+    private Coroutine soloTeleportCoroutine = null;
+    private float soloTeleportDelay = 30f;
 
     private void Start()
     {
         syncedCountdownTime.OnValueChanged += UpdateCountdownUI;
     }
 
+    private void Update()
+    {
+        if (IsServer)
+        {
+            CheckForSoloPlayer();
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (!IsServer) return; // Only the server handles player registration
+        if (!IsServer) return;
 
         if (other.CompareTag("Player") && other.TryGetComponent(out NetworkObject networkObject))
         {
             ulong clientId = networkObject.OwnerClientId;
-            
+
             if (!registeredPlayers.Contains(clientId))
             {
                 registeredPlayers.Add(clientId);
@@ -47,7 +58,7 @@ public class TeleportHandler : NetworkBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (!IsServer) return; // Only the server handles player removal
+        if (!IsServer) return;
 
         if (other.CompareTag("Player") && other.TryGetComponent(out NetworkObject networkObject))
         {
@@ -95,7 +106,6 @@ public class TeleportHandler : NetworkBehaviour
             }
 
             ballSpawner?.TrySpawnBall(transform.position, registeredPlayers.Count);
-            Debug.Log("SPwanball");
         }
         else
         {
@@ -118,97 +128,50 @@ public class TeleportHandler : NetworkBehaviour
             var playerObject = client.PlayerObject;
             if (playerObject != null)
             {
-                Debug.Log($"[TeleportHandler] Attempting to teleport ClientID {clientId} to {randomPoint.position}");
-
-                // Disable NetworkTransform temporarily
                 var networkTransform = playerObject.GetComponent<NetworkTransform>();
                 if (networkTransform != null)
                 {
-                    // Disable interpolation and synchronization
                     networkTransform.Interpolate = false;
                 }
 
-                // Force teleport on the server
                 ForcePlayerTeleportClientRpc(randomPoint.position, randomPoint.rotation, clientId);
             }
-            else
-            {
-                Debug.LogError($"[TeleportHandler] PlayerObject for ClientID {clientId} is null!");
-            }
-        }
-        else
-        {
-            Debug.LogError($"[TeleportHandler] Client {clientId} not found in ConnectedClients!");
         }
     }
 
     [ClientRpc]
     private void ForcePlayerTeleportClientRpc(Vector3 position, Quaternion rotation, ulong targetClientId)
     {
-        // Only update for the specific client
         if (NetworkManager.Singleton.LocalClientId == targetClientId)
         {
             var localPlayerObject = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
             if (localPlayerObject != null)
             {
-                Debug.Log($"[TeleportHandler] Forcing Local Player {targetClientId} teleport to {position}");
-
-                // Get all components that might interfere with positioning
                 var networkTransform = localPlayerObject.GetComponent<NetworkTransform>();
                 var characterController = localPlayerObject.GetComponent<CharacterController>();
                 var rigidbody = localPlayerObject.GetComponent<Rigidbody>();
 
-                // Disable movement components temporarily
-                if (networkTransform != null)
-                {
-                    networkTransform.Interpolate = false;
-                }
+                if (networkTransform != null) networkTransform.Interpolate = false;
+                if (characterController != null) characterController.enabled = false;
+                if (rigidbody != null) rigidbody.isKinematic = true;
 
-                if (characterController != null)
-                {
-                    characterController.enabled = false;
-                }
-
-                if (rigidbody != null)
-                {
-                    rigidbody.isKinematic = true;
-                }
-
-                // Directly set position
                 localPlayerObject.transform.SetPositionAndRotation(position, rotation);
 
-                // Re-enable components after a short delay
                 StartCoroutine(ReenableMovementComponents(localPlayerObject, networkTransform, characterController, rigidbody));
-            }
-            else
-            {
-                Debug.LogError("[TeleportHandler] Local Player object not found!");
             }
         }
     }
 
-    private IEnumerator ReenableMovementComponents(NetworkObject playerObject, 
-        NetworkTransform networkTransform, 
-        CharacterController characterController, 
+    private IEnumerator ReenableMovementComponents(NetworkObject playerObject,
+        NetworkTransform networkTransform,
+        CharacterController characterController,
         Rigidbody rigidbody)
     {
         yield return new WaitForSeconds(0.1f);
 
-        // Re-enable components
-        if (networkTransform != null)
-        {
-            networkTransform.Interpolate = true;
-        }
-
-        if (characterController != null)
-        {
-            characterController.enabled = true;
-        }
-
-        if (rigidbody != null)
-        {
-            rigidbody.isKinematic = false;
-        }
+        if (networkTransform != null) networkTransform.Interpolate = true;
+        if (characterController != null) characterController.enabled = true;
+        if (rigidbody != null) rigidbody.isKinematic = false;
     }
 
     private void UpdateCountdownUI(float oldTime, float newTime)
@@ -222,5 +185,45 @@ public class TeleportHandler : NetworkBehaviour
         {
             countdownText.gameObject.SetActive(false);
         }
+    }
+
+    private void CheckForSoloPlayer()
+    {
+        if (soloTeleportCoroutine != null) return;
+
+        List<NetworkClient> alivePlayers = new List<NetworkClient>();
+
+        foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            if (client.PlayerObject != null && client.PlayerObject.IsSpawned)
+            {
+                // Optional: insert custom alive check
+                alivePlayers.Add(client);
+            }
+        }
+
+        if (alivePlayers.Count == 1)
+        {
+            soloTeleportCoroutine = StartCoroutine(SoloTeleportAfterDelay(alivePlayers[0].ClientId));
+        }
+    }
+
+    private IEnumerator SoloTeleportAfterDelay(ulong clientId)
+    {
+        Debug.Log("[TeleportHandler] Only one player alive. Waiting 30s to teleport.");
+
+        yield return new WaitForSeconds(soloTeleportDelay);
+
+        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client))
+        {
+            var playerObject = client.PlayerObject;
+            if (playerObject != null && playerObject.IsSpawned)
+            {
+                Debug.Log($"[TeleportHandler] Teleporting solo player {clientId} after delay.");
+                TeleportRequestServerRpc(clientId);
+            }
+        }
+
+        soloTeleportCoroutine = null;
     }
 }
