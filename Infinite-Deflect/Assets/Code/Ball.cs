@@ -14,14 +14,17 @@ public class GameBall : NetworkBehaviour
     private Rigidbody rb;
     private NetworkObject currentTarget;
 
-    public override void OnNetworkSpawn()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+    }
 
+    public override void OnNetworkSpawn()
+    {
         if (IsServer)
         {
             currentSpeed.Value = initialSpeed;
-            SelectNewTarget();
+            Invoke(nameof(SelectNewTarget), 0.2f); // Allow time for players to be fully spawned
         }
     }
 
@@ -29,38 +32,35 @@ public class GameBall : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        // Get all valid player objects
         List<NetworkObject> players = NetworkManager.Singleton.ConnectedClients
             .Select(client => client.Value.PlayerObject)
             .Where(player => player != null && player.CompareTag("Player"))
             .ToList();
 
-        // Stop ball if only one or zero players
         if (players.Count <= 1)
         {
+            Debug.Log("[Ball] Not enough players to target.");
             currentTarget = null;
-            rb.linearVelocity = Vector3.zero;
+            rb.velocity = Vector3.zero;
             return;
         }
 
-        // Avoid targeting same player again
         if (currentTarget != null)
         {
             players.Remove(currentTarget);
         }
 
-        // Pick a new random target
         currentTarget = players[Random.Range(0, players.Count)];
         Vector3 direction = (currentTarget.transform.position - transform.position).normalized;
-        rb.linearVelocity = direction * currentSpeed.Value;
-    }
+        rb.velocity = direction * currentSpeed.Value;
 
+        Debug.Log($"[Ball] New target: {currentTarget.name}, velocity: {rb.velocity}");
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (!IsServer) return;
 
-        // Ball hits player directly
         if (collision.gameObject.CompareTag("Player"))
         {
             PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
@@ -69,21 +69,17 @@ public class GameBall : NetworkBehaviour
                 playerHealth.TakeDamageServerRpc(ballDamage);
             }
 
-            // Increase ball speed
             float speedIncrease = currentSpeed.Value * (speedIncreasePercentage / 100f);
             currentSpeed.Value += speedIncrease;
 
-            // Select new target
             SelectNewTarget();
         }
-        // Ball hits player deflect zone
         else if (collision.gameObject.CompareTag("PlayerDeflect"))
         {
-            Vector3 deflectDirection = Vector3.Reflect(rb.linearVelocity.normalized, collision.contacts[0].normal);
-            rb.linearVelocity = deflectDirection * currentSpeed.Value;
+            Vector3 deflectDirection = Vector3.Reflect(rb.velocity.normalized, collision.contacts[0].normal);
+            rb.velocity = deflectDirection * currentSpeed.Value;
 
-            // Optional: pick new target on deflect
-            SelectNewTarget();
+            SelectNewTarget(); // Optional: change target after deflection
         }
     }
 
