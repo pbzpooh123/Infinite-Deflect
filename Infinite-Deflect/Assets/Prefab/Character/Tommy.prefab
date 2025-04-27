@@ -353,9 +353,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   rotationSpeed: 15
-  deflectCooldown: 0.5
+  deflectCooldown: 1
   deflectZonePrefab: {fileID: 8416796226681136340, guid: 27e56ff45b48e1a47810d20f4c57a323, type: 3}
-  deflectZoneOffset: {x: 0, y: 1, z: 0.5}
+  deflectZoneOffset: {x: 0, y: 0, z: 0}
   isGrounded: 0
 --- !u!114 &-7031707864453027263
 MonoBehaviour:
