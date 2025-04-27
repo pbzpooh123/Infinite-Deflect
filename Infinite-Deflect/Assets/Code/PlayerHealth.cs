@@ -6,55 +6,52 @@ using System;
 public class PlayerHealth : NetworkBehaviour
 {
     [Header("Health Settings")]
-    [SerializeField] private int maxHealth = 3; // Set max HP to 3
-
+    [SerializeField] private int maxHealth = 1; // only 1 hit to die for your ball system
     private NetworkVariable<int> currentHealth = new NetworkVariable<int>(
-        3, 
-        NetworkVariableReadPermission.Everyone, 
-        NetworkVariableWritePermission.Owner
+        1,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
     );
 
     [Header("References")]
     [SerializeField] private GameObject playerModel;
     [SerializeField] private GameObject playerCollider;
 
-    private Slider healthBar; // UI Health Bar (found at runtime)
+    private Slider healthBar;
+    private bool isDead = false;
 
-    // Events for health changes
     public event Action<int> OnHealthChanged;
     public event Action OnDeath;
+
+    public bool IsDead => isDead;
 
     public override void OnNetworkSpawn()
     {
         if (IsOwner)
         {
-            // Find the UI dynamically after spawning
-            healthBar = FindObjectOfType<Slider>(); // Assumes only one health bar for the local player
+            healthBar = FindObjectOfType<Slider>();
             if (healthBar != null)
             {
                 healthBar.maxValue = maxHealth;
-                healthBar.value = currentHealth.Value; // Initialize UI
+                healthBar.value = currentHealth.Value;
             }
-
-            currentHealth.OnValueChanged += HandleHealthChanged;
         }
+
+        currentHealth.OnValueChanged += HandleHealthChanged;
     }
 
     public override void OnNetworkDespawn()
     {
-        if (IsOwner)
-        {
-            currentHealth.OnValueChanged -= HandleHealthChanged;
-        }
+        currentHealth.OnValueChanged -= HandleHealthChanged;
     }
 
     private void HandleHealthChanged(int previousValue, int newValue)
     {
         UpdateHealthUI(newValue);
-        OnHealthChanged?.Invoke(newValue);
 
-        if (newValue <= 0)
+        if (newValue <= 0 && !isDead)
         {
+            isDead = true;
             Die();
         }
     }
@@ -72,16 +69,18 @@ public class PlayerHealth : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        currentHealth.Value = Mathf.Max(0, currentHealth.Value - damageAmount);
-        Debug.Log($"Player {OwnerClientId} took {damageAmount} damage. Remaining Health: {currentHealth.Value}");
+        if (currentHealth.Value > 0)
+        {
+            currentHealth.Value = Mathf.Max(0, currentHealth.Value - damageAmount);
+        }
     }
 
     private void Die()
     {
-        if (IsOwner)
+        if (IsServer)
         {
             DisablePlayerClientRpc();
-            OnDeath?.Invoke();
+            GameManager.Instance.CheckRoundOver();
         }
     }
 
@@ -90,41 +89,37 @@ public class PlayerHealth : NetworkBehaviour
     {
         if (playerModel != null) playerModel.SetActive(false);
         if (playerCollider != null) playerCollider.SetActive(false);
-    }
 
-    public int GetCurrentHealth()
-    {
-        return currentHealth.Value;
-    }
-
-    [ServerRpc]
-    public void HealServerRpc(int healAmount)
-    {
-        if (!IsServer) return;
-
-        currentHealth.Value = Mathf.Min(maxHealth, currentHealth.Value + healAmount);
-    }
-
-    [ServerRpc]
-    public void KillPlayerServerRpc()
-    {
-        if (!IsServer) return;
-        currentHealth.Value = 0;
-    }
-
-    [ServerRpc]
-    public void ResetHealthServerRpc()
-    {
-        if (!IsServer) return;
-        currentHealth.Value = maxHealth;
-        EnablePlayerClientRpc();
+        var movement = GetComponent<NetworkedMovementStateManager>();
+        if (movement != null)
+        {
+            movement.enabled = false;
+        }
     }
 
     [ClientRpc]
-    private void EnablePlayerClientRpc()
+    public void EnablePlayerClientRpc()
     {
         if (playerModel != null) playerModel.SetActive(true);
         if (playerCollider != null) playerCollider.SetActive(true);
+
+        var movement = GetComponent<NetworkedMovementStateManager>();
+        if (movement != null)
+        {
+            movement.enabled = true;
+        }
+
         UpdateHealthUI(currentHealth.Value);
+    }
+
+    [ServerRpc]
+    public void RespawnServerRpc(Vector3 spawnPosition)
+    {
+        if (!IsServer) return;
+
+        transform.position = spawnPosition;
+        currentHealth.Value = maxHealth;
+        isDead = false;
+        EnablePlayerClientRpc();
     }
 }

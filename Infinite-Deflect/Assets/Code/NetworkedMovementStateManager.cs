@@ -18,8 +18,9 @@ public class NetworkedMovementStateManager : NetworkBehaviour
 
     private Rigidbody rb;
     private Vector3 movementDirection;
-    private bool isGrounded;
+    [SerializeField] private bool isGrounded;
     private bool canDeflect = true;
+    private bool isDeflecting = false;
     private GameObject deflectZone;
     private Transform cameraTransform;
     private Animator animator;
@@ -45,7 +46,6 @@ public class NetworkedMovementStateManager : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Owner
     );
-
 
     private void Awake()
     {
@@ -77,7 +77,6 @@ public class NetworkedMovementStateManager : NetworkBehaviour
         StartCoroutine(WaitForCamera());
         gameObject.tag = "Player";
 
-        // Subscribe to network animation changes
         netMoveMagnitude.OnValueChanged += OnMoveMagnitudeChanged;
         netIsIdle.OnValueChanged += OnIsIdleChanged;
     }
@@ -103,11 +102,10 @@ public class NetworkedMovementStateManager : NetworkBehaviour
             GetDirection();
             CheckGrounded();
             HandleJump();
-            HandleAttack(); 
             HandleDeflect();
         }
 
-        UpdateAnimation(); // Now updates for everyone
+        UpdateAnimation();
 
         if (!IsOwner)
         {
@@ -181,63 +179,67 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     {
         if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
+            Vector3 velocity = rb.velocity;
+            velocity.y = 0f;
+            rb.velocity = velocity; // Reset Y velocity
+
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
             animator.SetTrigger("Jump");
         }
     }
+    
 
-    private void HandleAttack()
+    private void HandleDeflect()
     {
-        if (Input.GetMouseButtonDown(0)) 
+        if (!canDeflect)
+            return;
+
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.F))
         {
-            PlayAttackAnimationServerRpc();
+            DeflectServerRpc();
         }
     }
 
     [ServerRpc]
-    private void PlayAttackAnimationServerRpc()
+    private void DeflectServerRpc()
     {
-        PlayAttackAnimationClientRpc();
+        DeflectClientRpc();
     }
 
     [ClientRpc]
-    private void PlayAttackAnimationClientRpc()
+    private void DeflectClientRpc()
     {
         if (animator != null)
         {
-            animator.SetTrigger("Hit"); 
+            animator.SetTrigger("Hit"); // Play Deflect Animation
         }
-    }
 
-    private void HandleDeflect()
-    {
-        if (!canDeflect || deflectZone == null) return;
-
-        if (Input.GetKeyDown(KeyCode.F))
+        if (deflectZone == null)
         {
-            ActivateDeflect(deflectZone);
+            deflectZone = Instantiate(deflectZonePrefab, transform.position + deflectZoneOffset, transform.rotation, transform);
+            deflectZone.SetActive(false);
+        }
+
+        if (!isDeflecting)
+        {
+            StartCoroutine(DoDeflect());
         }
     }
 
-    private void ActivateDeflect(GameObject zone)
+    private IEnumerator DoDeflect()
     {
-        if (!canDeflect || zone == null) return;
-
-        animator.SetTrigger("Hit"); 
-        PlayAttackAnimationServerRpc(); 
-        zone.SetActive(true);
-        StartCoroutine(DeflectCooldown(zone));
-    }
-
-    private IEnumerator DeflectCooldown(GameObject zone)
-    {
+        isDeflecting = true;
         canDeflect = false;
 
-        yield return new WaitForSeconds(0.2f);
-        zone.SetActive(false);
+        deflectZone.SetActive(true);
 
-        yield return new WaitForSeconds(deflectCooldown);
+        yield return new WaitForSeconds(0.2f); // Deflect active time
+        deflectZone.SetActive(false);
+
+        yield return new WaitForSeconds(deflectCooldown); // Cooldown
         canDeflect = true;
+        isDeflecting = false;
     }
 
     private void UpdateAnimation()
@@ -276,5 +278,17 @@ public class NetworkedMovementStateManager : NetworkBehaviour
         {
             animator.SetBool("IsIdle", newValue);
         }
+    }
+    
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+
+        // The origin point where you start the sphere cast
+        Vector3 origin = transform.position + Vector3.up * 0.1f;
+        
+        // Draw the end sphere where the cast would end
+        Vector3 endPoint = origin + Vector3.down * (groundCheckDistance + 0.1f);
+        Gizmos.DrawWireSphere(endPoint, 0.5f);
     }
 }

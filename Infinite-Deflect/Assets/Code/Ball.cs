@@ -13,6 +13,7 @@ public class GameBall : NetworkBehaviour
     private NetworkVariable<float> currentSpeed = new NetworkVariable<float>();
     private Rigidbody rb;
     private NetworkObject currentTarget;
+    private NetworkObject lastDeflector; // New: track last deflecting player
 
     private void Awake()
     {
@@ -24,7 +25,7 @@ public class GameBall : NetworkBehaviour
         if (IsServer)
         {
             currentSpeed.Value = initialSpeed;
-            Invoke(nameof(SelectNewTarget), 0.2f); // Allow time for players to be fully spawned
+            Invoke(nameof(SelectNewTarget), 0.2f); // Allow time for players to spawn
         }
     }
 
@@ -47,14 +48,14 @@ public class GameBall : NetworkBehaviour
 
         if (currentTarget != null)
         {
-            players.Remove(currentTarget);
+            players.Remove(currentTarget); // Avoid same player immediately after hit
         }
 
         currentTarget = players[Random.Range(0, players.Count)];
         Vector3 direction = (currentTarget.transform.position - transform.position).normalized;
         rb.velocity = direction * currentSpeed.Value;
 
-        Debug.Log($"[Ball] New target: {currentTarget.name}, velocity: {rb.velocity}");
+        Debug.Log($"[Ball] New target: {currentTarget.name}");
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -63,24 +64,75 @@ public class GameBall : NetworkBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
+            NetworkObject hitPlayer = collision.gameObject.GetComponent<NetworkObject>();
+
+            if (hitPlayer != null && currentTarget != null && hitPlayer.NetworkObjectId == currentTarget.NetworkObjectId)
             {
-                playerHealth.TakeDamageServerRpc(ballDamage);
+                // Correct target hit
+                PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
+                if (playerHealth != null)
+                {
+                    playerHealth.TakeDamageServerRpc(ballDamage);
+                }
+
+                IncreaseSpeed();
+                SelectNewTarget();
             }
-
-            float speedIncrease = currentSpeed.Value * (speedIncreasePercentage / 100f);
-            currentSpeed.Value += speedIncrease;
-
-            SelectNewTarget();
+            else
+            {
+                Debug.Log($"[Ball] Hit wrong player ({hitPlayer?.name}), ignoring.");
+            }
         }
         else if (collision.gameObject.CompareTag("PlayerDeflect"))
         {
-            Vector3 deflectDirection = Vector3.Reflect(rb.velocity.normalized, collision.contacts[0].normal);
-            rb.velocity = deflectDirection * currentSpeed.Value;
+            NetworkObject deflector = collision.gameObject.GetComponentInParent<NetworkObject>();
+            if (deflector != null)
+            {
+                lastDeflector = deflector; // Remember who deflected
+            }
 
-            SelectNewTarget(); // Optional: change target after deflection
+            IncreaseSpeed();
+            SelectRandomTargetAfterDeflect();
+            Debug.Log("[Ball] Deflected! Speed increased and targeting new player.");
         }
+    }
+
+    private void SelectRandomTargetAfterDeflect()
+    {
+        List<NetworkObject> players = NetworkManager.Singleton.ConnectedClients
+            .Select(client => client.Value.PlayerObject)
+            .Where(player => player != null && player.CompareTag("Player"))
+            .ToList();
+
+        if (players.Count == 0)
+        {
+            Debug.LogWarning("[Ball] No players to target after deflect.");
+            return;
+        }
+
+        if (lastDeflector != null)
+        {
+            players.Remove(lastDeflector); // Remove the deflector if possible
+        }
+
+        if (players.Count == 0 && lastDeflector != null)
+        {
+            // Only the deflector is left, so allow targeting them
+            players.Add(lastDeflector);
+        }
+
+        currentTarget = players[Random.Range(0, players.Count)];
+        Vector3 direction = (currentTarget.transform.position - transform.position).normalized;
+        rb.velocity = direction * currentSpeed.Value;
+
+        Debug.Log($"[Ball] New random target after deflect: {currentTarget.name}");
+        lastDeflector = null; // Clear after picking new target
+    }
+
+    private void IncreaseSpeed()
+    {
+        float speedIncrease = currentSpeed.Value * (speedIncreasePercentage / 100f);
+        currentSpeed.Value += speedIncrease;
     }
 
     [ServerRpc(RequireOwnership = false)]

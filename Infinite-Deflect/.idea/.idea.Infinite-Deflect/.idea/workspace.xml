@@ -7,7 +7,9 @@
     <list default="true" id="9a8fcc8b-49ff-4ac0-b3a6-e75a36f69e8e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Infinite-Deflect/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Infinite-Deflect/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Code/Ball.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Ball.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/SpawnArea.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/SpawnArea.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Code/NetworkedMovementStateManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/NetworkedMovementStateManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Code/PlayerHealth.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/PlayerHealth.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/ForestArena.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/ForestArena.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +18,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Code/Ball.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Code/GameManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Code/PlayerCameraManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Code/SpawnArea.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.dedicated-server@2b38b7e45412/MultiplayerRoles/Editor/GUI/MultiplayerRoleField.cs" root0="SKIP_HIGHLIGHTING" />
@@ -121,6 +124,10 @@
       <workItem from="1745279531291" duration="1259000" />
       <workItem from="1745299958092" duration="1774000" />
       <workItem from="1745322598326" duration="336000" />
+      <workItem from="1745483906033" duration="77000" />
+      <workItem from="1745484015945" duration="117000" />
+      <workItem from="1745737442349" duration="439000" />
+      <workItem from="1745754683828" duration="706000" />
     </task>
     <servers />
   </component>
