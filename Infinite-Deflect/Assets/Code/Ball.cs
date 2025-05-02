@@ -7,7 +7,7 @@ public class GameBall : NetworkBehaviour
 {
     [Header("Ball Settings")]
     [SerializeField] private float initialSpeed = 10f;
-    [SerializeField] private float speedIncreasePercentage = 10f;
+    [SerializeField] private float speedIncreasePercentage = 50f;
     [SerializeField] private int ballDamage = 1;
 
     private NetworkVariable<float> currentSpeed = new NetworkVariable<float>();
@@ -40,15 +40,18 @@ public class GameBall : NetworkBehaviour
 
         if (players.Count <= 1)
         {
-            Debug.Log("[Ball] Not enough players to target.");
+            Debug.Log("[Ball] Not enough players to target. Stopping ball.");
             currentTarget = null;
             rb.velocity = Vector3.zero;
+            rb.isKinematic = true; // Freeze physics
             return;
         }
 
+        rb.isKinematic = false; // Reactivate ball
+
         if (currentTarget != null)
         {
-            players.Remove(currentTarget); // Avoid same player immediately after hit
+            players.Remove(currentTarget); // Avoid hitting same player again
         }
 
         currentTarget = players[Random.Range(0, players.Count)];
@@ -57,6 +60,7 @@ public class GameBall : NetworkBehaviour
 
         Debug.Log($"[Ball] New target: {currentTarget.name}");
     }
+
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -148,4 +152,26 @@ public class GameBall : NetworkBehaviour
     {
         return currentSpeed.Value;
     }
+    
+    private void Update()
+    {
+        if (!IsServer || currentTarget == null)
+        {
+            return;
+        }
+
+        // Maintain direction toward target
+        Vector3 direction = (currentTarget.transform.position - transform.position).normalized;
+        rb.velocity = direction * currentSpeed.Value;
+
+        // Clamp height to keep above minimum Y
+        float minY = 3.5f; // set your minimum allowed Y height here
+        if (transform.position.y < minY)
+        {
+            Vector3 correctedPos = new Vector3(transform.position.x, minY, transform.position.z);
+            transform.position = correctedPos;
+        }
+    }
+
+
 }

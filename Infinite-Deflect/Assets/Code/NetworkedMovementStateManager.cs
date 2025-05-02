@@ -234,7 +234,7 @@ public class NetworkedMovementStateManager : NetworkBehaviour
 
         deflectZone.SetActive(true);
 
-        yield return new WaitForSeconds(0.2f); // Deflect active time
+        yield return new WaitForSeconds(1f); // Deflect active time
         deflectZone.SetActive(false);
 
         yield return new WaitForSeconds(deflectCooldown); // Cooldown

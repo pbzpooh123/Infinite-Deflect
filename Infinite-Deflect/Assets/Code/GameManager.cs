@@ -11,6 +11,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private float roundEndDelay = 3f;
     [SerializeField] private Transform winnerTeleportLocation;
     [SerializeField] private Transform[] playerSpawnPoints;
+    
 
     private void Awake()
     {
@@ -36,6 +37,13 @@ public class GameManager : NetworkBehaviour
 
         if (alivePlayers.Count == 1)
         {
+            // Destroy the ball if it exists
+            var ball = FindObjectOfType<GameBall>(); // or whatever your ball script is called
+            if (ball != null && ball.NetworkObject.IsSpawned)
+            {
+                ball.NetworkObject.Despawn();
+            }
+            
             Debug.Log($"Round Over! Winner is player {alivePlayers[0].OwnerClientId}");
             StartCoroutine(HandleRoundEnd(alivePlayers[0]));
         }
@@ -59,9 +67,7 @@ public class GameManager : NetworkBehaviour
                 spawnIndex++;
             }
         }
-
-        // Reset winner's health to full too if needed
-        winner.RespawnServerRpc(winner.transform.position);
+        
 
         Debug.Log("Next round ready!");
     }

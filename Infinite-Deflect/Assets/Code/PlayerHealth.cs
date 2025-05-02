@@ -64,7 +64,7 @@ public class PlayerHealth : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void TakeDamageServerRpc(int damageAmount)
     {
         if (!IsServer) return;

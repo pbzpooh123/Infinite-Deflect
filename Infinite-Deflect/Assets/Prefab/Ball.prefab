@@ -111,7 +111,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 0.42
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &4580270641106770192
 Rigidbody:
@@ -180,7 +180,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   initialSpeed: 5
   speedIncreasePercentage: 5
-  minTimeBetweenTargetChanges: 0.1
   ballDamage: 1
 --- !u!114 &7501587107275657167
 MonoBehaviour:

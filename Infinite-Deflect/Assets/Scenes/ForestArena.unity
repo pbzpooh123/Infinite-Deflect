@@ -5700,7 +5700,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  roundEndDelay: 30
+  roundEndDelay: 5
   winnerTeleportLocation: {fileID: 1935649233}
   playerSpawnPoints:
   - {fileID: 1935649233}
