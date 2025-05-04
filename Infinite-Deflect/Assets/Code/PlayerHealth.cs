@@ -6,7 +6,7 @@ using System;
 public class PlayerHealth : NetworkBehaviour
 {
     [Header("Health Settings")]
-    [SerializeField] private int maxHealth = 1; // only 1 hit to die for your ball system
+    [SerializeField] private int maxHealth = 1;
     private NetworkVariable<int> currentHealth = new NetworkVariable<int>(
         1,
         NetworkVariableReadPermission.Everyone,
@@ -19,9 +19,6 @@ public class PlayerHealth : NetworkBehaviour
 
     private Slider healthBar;
     private bool isDead = false;
-
-    public event Action<int> OnHealthChanged;
-    public event Action OnDeath;
 
     public bool IsDead => isDead;
 
@@ -108,18 +105,25 @@ public class PlayerHealth : NetworkBehaviour
         {
             movement.enabled = true;
         }
-
+        isDead = false;
         UpdateHealthUI(currentHealth.Value);
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void RespawnServerRpc(Vector3 spawnPosition)
     {
         if (!IsServer) return;
 
         transform.position = spawnPosition;
         currentHealth.Value = maxHealth;
-        isDead = false;
+
         EnablePlayerClientRpc();
     }
+    
+    [ClientRpc]
+    public void TeleportClientRpc(Vector3 newPosition)
+    {
+        if (IsOwner) transform.position = newPosition;
+    }
+
 }

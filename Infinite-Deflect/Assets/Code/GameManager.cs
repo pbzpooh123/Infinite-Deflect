@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : NetworkBehaviour
 {
@@ -11,7 +11,6 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private float roundEndDelay = 3f;
     [SerializeField] private Transform winnerTeleportLocation;
     [SerializeField] private Transform[] playerSpawnPoints;
-    
 
     private void Awake()
     {
@@ -21,6 +20,9 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Called when a player dies to check if only one player is left alive.
+    /// </summary>
     public void CheckRoundOver()
     {
         if (!IsServer) return;
@@ -37,38 +39,46 @@ public class GameManager : NetworkBehaviour
 
         if (alivePlayers.Count == 1)
         {
-            // Destroy the ball if it exists
-            var ball = FindObjectOfType<GameBall>(); // or whatever your ball script is called
+            // Despawn the ball if it exists
+            var ball = FindObjectOfType<GameBall>();
             if (ball != null && ball.NetworkObject.IsSpawned)
             {
                 ball.NetworkObject.Despawn();
             }
-            
+
             Debug.Log($"Round Over! Winner is player {alivePlayers[0].OwnerClientId}");
             StartCoroutine(HandleRoundEnd(alivePlayers[0]));
         }
     }
 
+    /// <summary>
+    /// Ends the round, teleports winner, respawns others, then respawns all players for the next round.
+    /// </summary>
     private IEnumerator HandleRoundEnd(PlayerHealth winner)
     {
         yield return new WaitForSeconds(roundEndDelay);
 
-        // Teleport winner out
-        winner.transform.position = winnerTeleportLocation.position;
+        // Optional: Move winner to a special spot
+        if (winnerTeleportLocation != null)
+        {
+            winner.TeleportClientRpc(winnerTeleportLocation.position);
 
-        // Respawn other players
+        }
+
+        // Respawn all players (including winner)
         int spawnIndex = 0;
         foreach (var player in FindObjectsOfType<PlayerHealth>())
         {
-            if (player != winner)
+            if (player != winner && player.IsDead)
             {
                 Vector3 spawnPos = playerSpawnPoints[spawnIndex % playerSpawnPoints.Length].position;
                 player.RespawnServerRpc(spawnPos);
                 spawnIndex++;
             }
         }
-        
+
 
         Debug.Log("Next round ready!");
     }
+    
 }
