@@ -173,5 +173,10 @@ public class GameBall : NetworkBehaviour
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void SelectRandomTargetAfterDeflectServerRpc()
+    {
+        SelectRandomTargetAfterDeflect();
+    }
 
 }

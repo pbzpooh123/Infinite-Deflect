@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8711897275638872485}
   - component: {fileID: 2688763965504660270}
+  - component: {fileID: 2515024270092752272}
   m_Layer: 0
   m_Name: PlayerDeflect
   m_TagString: PlayerDeflect
@@ -51,5 +52,17 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 2.8599482, z: 1.4673662}
-  m_Center: {x: 0.79999995, y: -0.4149289, z: 0.23368311}
+  m_Size: {x: 2.565193, y: 3.5446682, z: 1.9325175}
+  m_Center: {x: 0.8292383, y: -0.5116813, z: 0.0011074543}
+--- !u!114 &2515024270092752272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8416796226681136340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bcea98dd2dc8a041ad5ec84423d97ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

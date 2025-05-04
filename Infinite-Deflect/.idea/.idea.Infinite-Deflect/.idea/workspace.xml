@@ -7,13 +7,9 @@
     <list default="true" id="9a8fcc8b-49ff-4ac0-b3a6-e75a36f69e8e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Infinite-Deflect/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Infinite-Deflect/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Code/Ball.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/Ball.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/GameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/GameManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Code/NetworkedMovementStateManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/NetworkedMovementStateManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Code/PlayerHealth.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Code/PlayerHealth.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefab/Ball.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Ball.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Prefab/Character/Tommy.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/Character/Tommy.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Prefab/PlayerDeflect.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefab/PlayerDeflect.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/ForestArena.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/ForestArena.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,6 +129,7 @@
       <workItem from="1745737442349" duration="439000" />
       <workItem from="1745754683828" duration="803000" />
       <workItem from="1746166183712" duration="1727000" />
+      <workItem from="1746339903431" duration="1715000" />
     </task>
     <servers />
   </component>

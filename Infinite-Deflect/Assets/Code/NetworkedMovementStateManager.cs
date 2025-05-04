@@ -13,8 +13,6 @@ public class NetworkedMovementStateManager : NetworkBehaviour
 
     [Header("Deflect Settings")]
     [SerializeField] private float deflectCooldown = 0.5f;
-    [SerializeField] private GameObject deflectZonePrefab;
-    [SerializeField] private Vector3 deflectZoneOffset = new Vector3(0, 1f, 0.5f);
 
     private Rigidbody rb;
     private Vector3 movementDirection;
@@ -51,12 +49,18 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        deflectZone = transform.Find("DeflectZone")?.gameObject;
 
         if (rb == null)
         {
             Debug.LogError("Rigidbody component is missing!");
             enabled = false;
             return;
+        }
+
+        if (deflectZone == null)
+        {
+            Debug.LogError("DeflectZone child object not found!");
         }
 
         rb.constraints = RigidbodyConstraints.FreezeRotation;
@@ -181,14 +185,13 @@ public class NetworkedMovementStateManager : NetworkBehaviour
         {
             Vector3 velocity = rb.velocity;
             velocity.y = 0f;
-            rb.velocity = velocity; // Reset Y velocity
+            rb.velocity = velocity;
 
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
             animator.SetTrigger("Jump");
         }
     }
-    
 
     private void HandleDeflect()
     {
@@ -212,16 +215,10 @@ public class NetworkedMovementStateManager : NetworkBehaviour
     {
         if (animator != null)
         {
-            animator.SetTrigger("Hit"); // Play Deflect Animation
+            animator.SetTrigger("Hit");
         }
 
-        if (deflectZone == null)
-        {
-            deflectZone = Instantiate(deflectZonePrefab, transform.position + deflectZoneOffset, transform.rotation, transform);
-            deflectZone.SetActive(false);
-        }
-
-        if (!isDeflecting)
+        if (deflectZone != null && !isDeflecting)
         {
             StartCoroutine(DoDeflect());
         }
@@ -234,10 +231,10 @@ public class NetworkedMovementStateManager : NetworkBehaviour
 
         deflectZone.SetActive(true);
 
-        yield return new WaitForSeconds(1f); // Deflect active time
+        yield return new WaitForSeconds(1f);
         deflectZone.SetActive(false);
 
-        yield return new WaitForSeconds(deflectCooldown); // Cooldown
+        yield return new WaitForSeconds(deflectCooldown);
         canDeflect = true;
         isDeflecting = false;
     }
@@ -279,15 +276,11 @@ public class NetworkedMovementStateManager : NetworkBehaviour
             animator.SetBool("IsIdle", newValue);
         }
     }
-    
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-
-        // The origin point where you start the sphere cast
         Vector3 origin = transform.position + Vector3.up * 0.1f;
-        
-        // Draw the end sphere where the cast would end
         Vector3 endPoint = origin + Vector3.down * (groundCheckDistance + 0.1f);
         Gizmos.DrawWireSphere(endPoint, 0.5f);
     }
