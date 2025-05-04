@@ -58,6 +58,7 @@ public class GameManager : NetworkBehaviour
     {
         yield return new WaitForSeconds(roundEndDelay);
         
+        teleportHandler.CheckForSoloPlayer();
         
         // Respawn all players (including winner)
         int spawnIndex = 0;
