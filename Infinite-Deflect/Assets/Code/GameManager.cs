@@ -52,33 +52,24 @@ public class GameManager : NetworkBehaviour
     }
 
     /// <summary>
-    /// Ends the round, teleports winner, respawns others, then respawns all players for the next round.
+    /// Ends the round, teleports the winner, and respawns all players.
     /// </summary>
     private IEnumerator HandleRoundEnd(PlayerHealth winner)
     {
         yield return new WaitForSeconds(roundEndDelay);
-
-        // Optional: Move winner to a special spot
-        if (winnerTeleportLocation != null)
-        {
-            winner.TeleportClientRpc(winnerTeleportLocation.position);
-
-        }
-
+        
+        
         // Respawn all players (including winner)
         int spawnIndex = 0;
         foreach (var player in FindObjectsOfType<PlayerHealth>())
         {
-            if (player != winner && player.IsDead)
-            {
-                Vector3 spawnPos = playerSpawnPoints[spawnIndex % playerSpawnPoints.Length].position;
-                player.RespawnServerRpc(spawnPos);
-                spawnIndex++;
-            }
+            Vector3 spawnPos = playerSpawnPoints[spawnIndex % playerSpawnPoints.Length].position;
+            player.RespawnServerRpc(spawnPos);
+            spawnIndex++;
         }
-
 
         Debug.Log("Next round ready!");
     }
-    
+
+    private TeleportHandler teleportHandler;
 }

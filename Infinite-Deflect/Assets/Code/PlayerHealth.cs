@@ -76,10 +76,12 @@ public class PlayerHealth : NetworkBehaviour
     {
         if (IsServer)
         {
+            Debug.Log($"{OwnerClientId} has died!");
             DisablePlayerClientRpc();
             GameManager.Instance.CheckRoundOver();
         }
     }
+
 
     [ClientRpc]
     private void DisablePlayerClientRpc()
@@ -117,13 +119,15 @@ public class PlayerHealth : NetworkBehaviour
         transform.position = spawnPosition;
         currentHealth.Value = maxHealth;
 
-        EnablePlayerClientRpc();
+        EnablePlayerClientRpc(); 
     }
+
     
     [ClientRpc]
     public void TeleportClientRpc(Vector3 newPosition)
     {
-        if (IsOwner) transform.position = newPosition;
+        transform.position = newPosition;
     }
+
 
 }

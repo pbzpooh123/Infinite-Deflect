@@ -13,7 +13,7 @@ public class GameBall : NetworkBehaviour
     private NetworkVariable<float> currentSpeed = new NetworkVariable<float>();
     private Rigidbody rb;
     private NetworkObject currentTarget;
-    private NetworkObject lastDeflector; // New: track last deflecting player
+    private NetworkObject lastDeflector; 
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class GameBall : NetworkBehaviour
         if (IsServer)
         {
             currentSpeed.Value = initialSpeed;
-            Invoke(nameof(SelectNewTarget), 0.2f); // Allow time for players to spawn
+            Invoke(nameof(SelectNewTarget), 0.2f); 
         }
     }
 
@@ -37,17 +37,6 @@ public class GameBall : NetworkBehaviour
             .Select(client => client.Value.PlayerObject)
             .Where(player => player != null && player.CompareTag("Player"))
             .ToList();
-
-        if (players.Count <= 1)
-        {
-            Debug.Log("[Ball] Not enough players to target. Stopping ball.");
-            currentTarget = null;
-            rb.velocity = Vector3.zero;
-            rb.isKinematic = true; // Freeze physics
-            return;
-        }
-
-        rb.isKinematic = false; // Reactivate ball
 
         if (currentTarget != null)
         {
@@ -92,7 +81,7 @@ public class GameBall : NetworkBehaviour
             NetworkObject deflector = collision.gameObject.GetComponentInParent<NetworkObject>();
             if (deflector != null)
             {
-                lastDeflector = deflector; // Remember who deflected
+                lastDeflector = deflector; 
             }
 
             IncreaseSpeed();
@@ -116,14 +105,9 @@ public class GameBall : NetworkBehaviour
 
         if (lastDeflector != null)
         {
-            players.Remove(lastDeflector); // Remove the deflector if possible
+            players.Remove(lastDeflector); 
         }
-
-        if (players.Count == 0 && lastDeflector != null)
-        {
-            // Only the deflector is left, so allow targeting them
-            players.Add(lastDeflector);
-        }
+        
 
         currentTarget = players[Random.Range(0, players.Count)];
         Vector3 direction = (currentTarget.transform.position - transform.position).normalized;
@@ -160,12 +144,12 @@ public class GameBall : NetworkBehaviour
             return;
         }
 
-        // Maintain direction toward target
+        
         Vector3 direction = (currentTarget.transform.position - transform.position).normalized;
         rb.velocity = direction * currentSpeed.Value;
 
-        // Clamp height to keep above minimum Y
-        float minY = 3.5f; // set your minimum allowed Y height here
+        
+        float minY = 8.5f; 
         if (transform.position.y < minY)
         {
             Vector3 correctedPos = new Vector3(transform.position.x, minY, transform.position.z);

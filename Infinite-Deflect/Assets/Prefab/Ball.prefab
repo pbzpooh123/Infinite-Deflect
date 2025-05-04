@@ -178,8 +178,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  initialSpeed: 5
-  speedIncreasePercentage: 5
+  initialSpeed: 10
+  speedIncreasePercentage: 10
   ballDamage: 1
 --- !u!114 &7501587107275657167
 MonoBehaviour:
