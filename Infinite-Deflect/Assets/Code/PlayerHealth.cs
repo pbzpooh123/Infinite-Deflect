@@ -23,7 +23,8 @@ public class PlayerHealth : NetworkBehaviour
     public event Action<int> OnHealthChanged;
     public event Action OnDeath;
 
-    public bool IsDead => isDead;
+    public NetworkVariable<bool> IsDead = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
 
     public override void OnNetworkSpawn()
     {
@@ -51,7 +52,7 @@ public class PlayerHealth : NetworkBehaviour
 
         if (newValue <= 0 && !isDead)
         {
-            isDead = true;
+            IsDead.Value = true;
             Die();
         }
     }

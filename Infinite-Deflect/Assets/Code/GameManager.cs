@@ -20,6 +20,8 @@ public class GameManager : NetworkBehaviour
             Instance = this;
         }
     }
+    
+    
 
     public void CheckRoundOver()
     {
@@ -29,7 +31,7 @@ public class GameManager : NetworkBehaviour
 
         foreach (var player in FindObjectsOfType<PlayerHealth>())
         {
-            if (!player.IsDead)
+            if (player.IsDead.Value = false)
             {
                 alivePlayers.Add(player);
             }

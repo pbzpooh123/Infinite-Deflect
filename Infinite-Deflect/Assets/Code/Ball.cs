@@ -165,7 +165,7 @@ public class GameBall : NetworkBehaviour
         rb.velocity = direction * currentSpeed.Value;
 
         // Clamp height to keep above minimum Y
-        float minY = 3.5f; // set your minimum allowed Y height here
+        float minY = 7.5f; // set your minimum allowed Y height here
         if (transform.position.y < minY)
         {
             Vector3 correctedPos = new Vector3(transform.position.x, minY, transform.position.z);
