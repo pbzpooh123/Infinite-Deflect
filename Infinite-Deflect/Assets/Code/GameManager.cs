@@ -8,7 +8,7 @@ public class GameManager : NetworkBehaviour
     public static GameManager Instance;
 
     [Header("Settings")]
-    [SerializeField] private float roundEndDelay = 3f;
+    [SerializeField] private float roundEndDelay = 10f;
     [SerializeField] private Transform winnerTeleportLocation;
     [SerializeField] private Transform[] playerSpawnPoints;
 
@@ -39,7 +39,7 @@ public class GameManager : NetworkBehaviour
 
         if (alivePlayers.Count == 1)
         {
-            // Despawn the ball if it exists
+            teleportHandler.CheckForSoloPlayer();
             var ball = FindObjectOfType<GameBall>();
             if (ball != null && ball.NetworkObject.IsSpawned)
             {
@@ -47,30 +47,31 @@ public class GameManager : NetworkBehaviour
             }
 
             Debug.Log($"Round Over! Winner is player {alivePlayers[0].OwnerClientId}");
-            StartCoroutine(HandleRoundEnd(alivePlayers[0]));
+            StartCoroutine(HandleRoundEnd());
         }
     }
 
     /// <summary>
     /// Ends the round, teleports the winner, and respawns all players.
     /// </summary>
-    private IEnumerator HandleRoundEnd(PlayerHealth winner)
+    private IEnumerator HandleRoundEnd()
     {
         yield return new WaitForSeconds(roundEndDelay);
-        
-        teleportHandler.CheckForSoloPlayer();
-        
-        // Respawn all players (including winner)
+
         int spawnIndex = 0;
         foreach (var player in FindObjectsOfType<PlayerHealth>())
         {
-            Vector3 spawnPos = playerSpawnPoints[spawnIndex % playerSpawnPoints.Length].position;
-            player.RespawnServerRpc(spawnPos);
-            spawnIndex++;
+            if (player.IsDead)
+            {
+                Vector3 spawnPos = playerSpawnPoints[spawnIndex % playerSpawnPoints.Length].position;
+                player.RespawnServerRpc(spawnPos);
+                spawnIndex++;
+            }
         }
 
         Debug.Log("Next round ready!");
     }
 
-    private TeleportHandler teleportHandler;
+
+    public TeleportHandler teleportHandler;
 }

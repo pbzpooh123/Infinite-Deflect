@@ -1,16 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using Unity.Netcode.Components;
+using Random = UnityEngine.Random;
 
 public class TeleportHandler : NetworkBehaviour
 {
     public Transform[] teleportLocations; // List of teleport points
     public SpawnArea ballSpawner; // Reference to the BallSpawner component
     public float countdownTime = 5f; // Time for players to step into the teleport zone
-    public float soloCountdownTime = 30f; // Time to wait if only one player is alive
+    public float soloCountdownTime = 3f; // Time to wait if only one player is alive
     public TextMeshProUGUI countdownText; // UI text for group countdown
     public TextMeshProUGUI soloCountdownText; // UI text for solo countdown
 
@@ -183,7 +185,13 @@ public class TeleportHandler : NetworkBehaviour
     // Called externally when checking player state
     public void CheckForSoloPlayer()
     {
-        if (!IsServer) return;
+        Debug.Log("[TeleportHandler] CheckForSoloPlayer called");
+
+        if (!IsServer)
+        {
+            Debug.LogWarning("[TeleportHandler] Not running on server, aborting CheckForSoloPlayer.");
+            return;
+        }
 
         int alivePlayers = 0;
         ulong lastAliveId = 0;
@@ -192,27 +200,38 @@ public class TeleportHandler : NetworkBehaviour
         {
             if (client.Value.PlayerObject != null && client.Value.PlayerObject.CompareTag("Player"))
             {
-                alivePlayers++;
-                lastAliveId = client.Key;
+                var playerHealth = client.Value.PlayerObject.GetComponent<PlayerHealth>();
+                if (playerHealth != null && !playerHealth.IsDead)
+                {
+                    alivePlayers++;
+                    lastAliveId = client.Key;
+                }
             }
         }
 
+
+        Debug.Log($"[TeleportHandler] Alive Players: {alivePlayers}, Coroutine Running: {soloTeleportCoroutine != null}");
+
         if (alivePlayers == 1 && soloTeleportCoroutine == null)
         {
+            Debug.Log("[TeleportHandler] Only one player alive. Starting solo teleport coroutine.");
             soloTeleportCoroutine = StartCoroutine(SoloTeleportAfterDelay(lastAliveId));
         }
         else if (alivePlayers > 1 && soloTeleportCoroutine != null)
         {
+            Debug.Log("[TeleportHandler] More than one player. Stopping solo teleport coroutine.");
             StopCoroutine(soloTeleportCoroutine);
             soloTeleportCoroutine = null;
             soloCountdownText.gameObject.SetActive(false);
         }
     }
 
+
     private IEnumerator SoloTeleportAfterDelay(ulong clientId)
     {
-        float timer = soloCountdownTime;
+        Debug.Log($"[TeleportHandler] SoloTeleportAfterDelay started for client {clientId}");
 
+        float timer = soloCountdownTime;
         soloCountdownText.gameObject.SetActive(true);
 
         while (timer > 0)
@@ -229,9 +248,29 @@ public class TeleportHandler : NetworkBehaviour
         {
             if (client.PlayerObject != null)
             {
-                Debug.Log($"[TeleportHandler] Solo teleporting player {clientId} back to spawn.");
+                Debug.Log($"[TeleportHandler] Teleporting player {clientId} back to spawn.");
                 TeleportRequestServerRpc(clientId);
             }
+            else
+            {
+                Debug.LogWarning($"[TeleportHandler] PlayerObject is null for client {clientId}");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[TeleportHandler] Could not find client with ID {clientId}");
         }
     }
+
+    private void Update()
+    {
+        if (!IsServer) return;
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("[Test] Manual check for solo player via 'P' key.");
+            CheckForSoloPlayer();
+        }
+    }
+
 }

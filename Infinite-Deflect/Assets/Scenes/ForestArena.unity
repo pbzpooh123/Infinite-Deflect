@@ -148,6 +148,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 579623743}
     - target: {fileID: -2989779076818519807, guid: 51d4e6500b7a15847ad886359396162d, type: 3}
+      propertyPath: soloCountdownTime
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -2989779076818519807, guid: 51d4e6500b7a15847ad886359396162d, type: 3}
       propertyPath: teleportLocations.Array.size
       value: 6
       objectReference: {fileID: 0}
@@ -655,6 +659,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.0054194927, y: 0.06283373, z: 0.018754803}
   m_Center: {x: -0.00009225004, y: -0.0011643695, z: -0.0007040712}
+--- !u!114 &165299059 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -2989779076818519807, guid: 51d4e6500b7a15847ad886359396162d, type: 3}
+  m_PrefabInstance: {fileID: 48953832}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d41620e0ce21f1448fd427813768076, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &174014820
 GameObject:
   m_ObjectHideFlags: 0
@@ -5841,10 +5856,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  roundEndDelay: 5
+  roundEndDelay: 10
   winnerTeleportLocation: {fileID: 1935649233}
   playerSpawnPoints:
   - {fileID: 1935649233}
+  teleportHandler: {fileID: 165299059}
 --- !u!4 &1931442007
 Transform:
   m_ObjectHideFlags: 0
