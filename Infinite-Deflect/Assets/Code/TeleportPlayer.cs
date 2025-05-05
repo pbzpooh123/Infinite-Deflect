@@ -9,15 +9,17 @@ using Random = UnityEngine.Random;
 
 public class TeleportHandler : NetworkBehaviour
 {
-    public Transform[] teleportLocations; // List of teleport points
-    public SpawnArea ballSpawner; // Reference to the BallSpawner component
-    public float countdownTime = 5f; // Time for players to step into the teleport zone
-    public float soloCountdownTime = 3f; // Time to wait if only one player is alive
-    public TextMeshProUGUI countdownText; // UI text for group countdown
-    public TextMeshProUGUI soloCountdownText; // UI text for solo countdown
+    public Transform[] teleportLocations; 
+    public SpawnArea ballSpawner; 
+    public float countdownTime = 5f; 
+    public float soloCountdownTime = 3f; 
+    public TextMeshProUGUI countdownText; 
+    public TextMeshProUGUI soloCountdownText; 
 
     private HashSet<ulong> registeredPlayers = new HashSet<ulong>();
     private bool isCountdownActive = false;
+    public Transform soloSpawnPoint; 
+
 
     private NetworkVariable<float> syncedCountdownTime = new NetworkVariable<float>(
         0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server
@@ -117,19 +119,31 @@ public class TeleportHandler : NetworkBehaviour
     {
         if (teleportLocations.Length == 0) return;
 
-        Transform randomPoint = teleportLocations[Random.Range(0, teleportLocations.Length)];
+        Transform targetPoint;
+
+        if (registeredPlayers.Count <= 1)
+        {
+            // Use a special solo spawn point
+            targetPoint = soloSpawnPoint;
+        }
+        else
+        {
+            // Use random from group spawn points
+            targetPoint = teleportLocations[Random.Range(0, teleportLocations.Length)];
+        }
+
 
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var client))
         {
             var playerObject = client.PlayerObject;
             if (playerObject != null)
             {
-                Debug.Log($"[TeleportHandler] Attempting to teleport ClientID {clientId} to {randomPoint.position}");
+                Debug.Log($"[TeleportHandler] Attempting to teleport ClientID {clientId} to {targetPoint.position}");
 
                 var networkTransform = playerObject.GetComponent<NetworkTransform>();
                 if (networkTransform != null) networkTransform.Interpolate = false;
 
-                ForcePlayerTeleportClientRpc(randomPoint.position, randomPoint.rotation, clientId);
+                ForcePlayerTeleportClientRpc(targetPoint.position, targetPoint.rotation, clientId);
             }
         }
     }

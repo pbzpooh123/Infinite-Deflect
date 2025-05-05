@@ -140,6 +140,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -2989779076818519807, guid: 51d4e6500b7a15847ad886359396162d, type: 3}
+      propertyPath: soloSpawnPoint
+      value: 
+      objectReference: {fileID: 1935649233}
+    - target: {fileID: -2989779076818519807, guid: 51d4e6500b7a15847ad886359396162d, type: 3}
       propertyPath: teleportLocation
       value: 
       objectReference: {fileID: 1881459364}
