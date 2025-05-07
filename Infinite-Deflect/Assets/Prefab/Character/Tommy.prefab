@@ -438,7 +438,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   swingSFX: {fileID: 8300000, guid: 8583af66f71f3a349bc877d85cf32afe, type: 3}
   jumpSFX: {fileID: 8300000, guid: 204f8cb1e43210847aac677618f52c0b, type: 3}
-  runGrassSFX: {fileID: 8300000, guid: f18d13f57645d8543b4f46301af6b6fd, type: 3}
+  runGrassSFX:
+  - {fileID: 8300000, guid: c49126eb3c0cb05489feffd75dc35a7c, type: 3}
+  - {fileID: 8300000, guid: 3e8e0f19d32ca90479bc80d586314cf1, type: 3}
+  - {fileID: 8300000, guid: 5a597a7761dcb244d9bf7fbd93da935e, type: 3}
 --- !u!82 &2734076145850743018
 AudioSource:
   m_ObjectHideFlags: 0

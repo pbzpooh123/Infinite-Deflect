@@ -4,7 +4,7 @@ public class AudioPlay : MonoBehaviour
 {
     [SerializeField] private AudioClip swingSFX;
     [SerializeField] private AudioClip jumpSFX;
-    [SerializeField] private AudioClip runGrassSFX;
+    [SerializeField] private AudioClip[] runGrassSFX;
     
     AudioSource audioSource;
     void Awake()
@@ -19,11 +19,18 @@ public class AudioPlay : MonoBehaviour
 
     private void Jump()
     {
-        audioSource.PlayOneShot(jumpSFX, 0.5f);
+        audioSource.PlayOneShot(jumpSFX, 0.3f);
     }
 
     private void Run()
     {
-        audioSource.PlayOneShot(runGrassSFX);
+        AudioClip clip = GotRandomAudioClip();
+        audioSource.PlayOneShot(clip, 0.3f);
     }
+
+    private AudioClip GotRandomAudioClip()
+    {
+        return runGrassSFX[UnityEngine.Random.Range(0,runGrassSFX.Length)];
+    }
+    
 }
