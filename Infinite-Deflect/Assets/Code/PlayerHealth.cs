@@ -1,6 +1,8 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerHealth : NetworkBehaviour
 {
@@ -51,10 +53,14 @@ public class PlayerHealth : NetworkBehaviour
 
         if (newValue <= 0 && !isDead.Value)
         {
-            isDead.Value = true;
-            Die();
+            if (IsServer) // ✅ Only the server sets this
+            {
+                isDead.Value = true;
+                Die();
+            }
         }
     }
+
 
     private void UpdateHealthUI(int health)
     {
@@ -101,7 +107,8 @@ public class PlayerHealth : NetworkBehaviour
     [ClientRpc]
     public void EnablePlayerClientRpc()
     {
-        Debug.Log("Enableclinet");
+        Debug.Log("EnableClient on client: " + NetworkManager.Singleton.LocalClientId);
+
         if (playerModel != null) playerModel.SetActive(true);
         if (playerCollider != null) playerCollider.SetActive(true);
 
@@ -111,20 +118,35 @@ public class PlayerHealth : NetworkBehaviour
             movement.enabled = true;
         }
 
-        isDead.Value = false;
         UpdateHealthUI(currentHealth.Value);
     }
+
+
+
 
     [ServerRpc(RequireOwnership = false)]
     public void RespawnServerRpc()
     {
-        Debug.Log("Severrespawn");
+        Debug.Log("Server respawn");
+        isDead.Value = false; // ✅ Server is allowed to write
         EnablePlayerClientRpc();
     }
 
-    [ClientRpc]
-    public void TeleportClientRpc(Vector3 newPosition)
+    public void ForceRespawn()
     {
-        transform.position = newPosition;
+        if (!IsServer) return;
+
+        currentHealth.Value = maxHealth;
+        isDead.Value = false;
+
+        // Delay the reactivation just a bit to avoid timing issues
+        StartCoroutine(DelayedEnableClient());
     }
+
+    private IEnumerator  DelayedEnableClient()
+    {
+        yield return new WaitForSeconds(0.1f); // small delay
+        EnablePlayerClientRpc();
+    }
+
 }

@@ -53,20 +53,15 @@ public class GameManager : NetworkBehaviour
     private IEnumerator HandleRoundEnd()
     {
         yield return new WaitForSeconds(roundEndDelay);
+
         foreach (var player in FindObjectsOfType<PlayerHealth>())
         {
-            Debug.Log($"Checking player {player.OwnerClientId}, isDead: {player.IsDead}");
-
-            if (player.IsDead)
-            {
-                player.RespawnServerRpc();
-            }
+            
+            player.ForceRespawn();
         }
-
+        
         Debug.Log("Next round ready!");
     }
-
-
-
+    
     public TeleportHandler teleportHandler;
 }
