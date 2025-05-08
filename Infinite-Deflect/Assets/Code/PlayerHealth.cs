@@ -1,7 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 public class PlayerHealth : NetworkBehaviour
 {
@@ -13,14 +12,18 @@ public class PlayerHealth : NetworkBehaviour
         NetworkVariableWritePermission.Server
     );
 
+    private NetworkVariable<bool> isDead = new NetworkVariable<bool>(
+        false,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
+
     [Header("References")]
     [SerializeField] private GameObject playerModel;
     [SerializeField] private GameObject playerCollider;
 
     private Slider healthBar;
-    private bool isDead = false;
-
-    public bool IsDead => isDead;
+    public bool IsDead => isDead.Value;
 
     public override void OnNetworkSpawn()
     {
@@ -46,9 +49,9 @@ public class PlayerHealth : NetworkBehaviour
     {
         UpdateHealthUI(newValue);
 
-        if (newValue <= 0 && !isDead)
+        if (newValue <= 0 && !isDead.Value)
         {
-            isDead = true;
+            isDead.Value = true;
             Die();
         }
     }
@@ -82,7 +85,6 @@ public class PlayerHealth : NetworkBehaviour
         }
     }
 
-
     [ClientRpc]
     private void DisablePlayerClientRpc()
     {
@@ -107,7 +109,8 @@ public class PlayerHealth : NetworkBehaviour
         {
             movement.enabled = true;
         }
-        isDead = false;
+
+        isDead.Value = false;
         UpdateHealthUI(currentHealth.Value);
     }
 
@@ -118,16 +121,14 @@ public class PlayerHealth : NetworkBehaviour
 
         transform.position = spawnPosition;
         currentHealth.Value = maxHealth;
+        isDead.Value = false;
 
-        EnablePlayerClientRpc(); 
+        EnablePlayerClientRpc();
     }
 
-    
     [ClientRpc]
     public void TeleportClientRpc(Vector3 newPosition)
     {
         transform.position = newPosition;
     }
-
-
 }

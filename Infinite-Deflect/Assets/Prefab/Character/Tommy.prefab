@@ -297,7 +297,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   rotationSpeed: 15
-  deflectCooldown: 1
+  deflectCooldown: 0.5
   isGrounded: 0
 --- !u!114 &-7031707864453027263
 MonoBehaviour:

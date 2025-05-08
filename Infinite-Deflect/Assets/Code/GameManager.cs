@@ -50,10 +50,8 @@ public class GameManager : NetworkBehaviour
             StartCoroutine(HandleRoundEnd());
         }
     }
-
-    /// <summary>
+    
     /// Ends the round, teleports the winner, and respawns all players.
-    /// </summary>
     private IEnumerator HandleRoundEnd()
     {
         yield return new WaitForSeconds(roundEndDelay);
@@ -61,6 +59,8 @@ public class GameManager : NetworkBehaviour
         int spawnIndex = 0;
         foreach (var player in FindObjectsOfType<PlayerHealth>())
         {
+            Debug.Log($"Checking player {player.OwnerClientId}, isDead: {player.IsDead}");
+
             if (player.IsDead)
             {
                 Vector3 spawnPos = playerSpawnPoints[spawnIndex % playerSpawnPoints.Length].position;
@@ -71,6 +71,7 @@ public class GameManager : NetworkBehaviour
 
         Debug.Log("Next round ready!");
     }
+
 
 
     public TeleportHandler teleportHandler;
