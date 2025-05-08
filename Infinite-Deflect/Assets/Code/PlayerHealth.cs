@@ -101,6 +101,7 @@ public class PlayerHealth : NetworkBehaviour
     [ClientRpc]
     public void EnablePlayerClientRpc()
     {
+        Debug.Log("Enableclinet");
         if (playerModel != null) playerModel.SetActive(true);
         if (playerCollider != null) playerCollider.SetActive(true);
 
@@ -115,14 +116,9 @@ public class PlayerHealth : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void RespawnServerRpc(Vector3 spawnPosition)
+    public void RespawnServerRpc()
     {
-        if (!IsServer) return;
-
-        transform.position = spawnPosition;
-        currentHealth.Value = maxHealth;
-        isDead.Value = false;
-
+        Debug.Log("Severrespawn");
         EnablePlayerClientRpc();
     }
 

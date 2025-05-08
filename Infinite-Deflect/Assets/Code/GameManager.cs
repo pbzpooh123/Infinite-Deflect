@@ -19,10 +19,8 @@ public class GameManager : NetworkBehaviour
             Instance = this;
         }
     }
-
-    /// <summary>
+    
     /// Called when a player dies to check if only one player is left alive.
-    /// </summary>
     public void CheckRoundOver()
     {
         if (!IsServer) return;
@@ -55,17 +53,13 @@ public class GameManager : NetworkBehaviour
     private IEnumerator HandleRoundEnd()
     {
         yield return new WaitForSeconds(roundEndDelay);
-
-        int spawnIndex = 0;
         foreach (var player in FindObjectsOfType<PlayerHealth>())
         {
             Debug.Log($"Checking player {player.OwnerClientId}, isDead: {player.IsDead}");
 
             if (player.IsDead)
             {
-                Vector3 spawnPos = playerSpawnPoints[spawnIndex % playerSpawnPoints.Length].position;
-                player.RespawnServerRpc(spawnPos);
-                spawnIndex++;
+                player.RespawnServerRpc();
             }
         }
 
