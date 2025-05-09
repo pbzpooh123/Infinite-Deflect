@@ -181,6 +181,7 @@ MonoBehaviour:
   initialSpeed: 10
   speedIncreasePercentage: 10
   ballDamage: 1
+  ballRenderer: {fileID: 9096769737560287546}
 --- !u!114 &7501587107275657167
 MonoBehaviour:
   m_ObjectHideFlags: 0

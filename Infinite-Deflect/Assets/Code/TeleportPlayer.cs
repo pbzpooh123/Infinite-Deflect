@@ -115,7 +115,7 @@ public class TeleportHandler : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void TeleportRequestServerRpc(ulong clientId)
+    public void TeleportRequestServerRpc(ulong clientId)
     {
         if (teleportLocations.Length == 0) return;
 

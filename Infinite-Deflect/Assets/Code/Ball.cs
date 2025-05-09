@@ -14,6 +14,9 @@ public class GameBall : NetworkBehaviour
     private Rigidbody rb;
     private NetworkObject currentTarget;
     private NetworkObject lastDeflector; 
+    
+    [SerializeField] private Renderer ballRenderer;
+
 
     private void Awake()
     {
@@ -42,7 +45,8 @@ public class GameBall : NetworkBehaviour
         {
             players.Remove(currentTarget); // Avoid hitting same player again
         }
-
+        
+        UpdateBallVisualForTarget(currentTarget);
         currentTarget = players[Random.Range(0, players.Count)];
         Vector3 direction = (currentTarget.transform.position - transform.position).normalized;
         rb.velocity = direction * currentSpeed.Value;
@@ -108,6 +112,7 @@ public class GameBall : NetworkBehaviour
             players.Remove(lastDeflector); 
         }
         
+        UpdateBallVisualForTarget(currentTarget);
 
         currentTarget = players[Random.Range(0, players.Count)];
         Vector3 direction = (currentTarget.transform.position - transform.position).normalized;
@@ -162,5 +167,34 @@ public class GameBall : NetworkBehaviour
     {
         SelectRandomTargetAfterDeflect();
     }
+    
+    [ClientRpc]
+    private void SetBallColorClientRpc(Color color, ClientRpcParams rpcParams = default)
+    {
+        if (ballRenderer != null)
+        {
+            ballRenderer.material.color = color;
+        }
+    }
+
+    private void UpdateBallVisualForTarget(NetworkObject target)
+    {
+        if (target != null)
+        {
+            var clientId = target.OwnerClientId;
+
+            Color color = Color.red; // Or any logic to vary by player
+            ClientRpcParams rpcParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            };
+
+            SetBallColorClientRpc(color, rpcParams);
+        }
+    }
+
 
 }

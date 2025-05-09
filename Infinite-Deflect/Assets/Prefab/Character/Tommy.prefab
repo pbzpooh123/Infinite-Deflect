@@ -249,9 +249,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.45
-  m_Height: 3.57
+  m_Height: 3.2858047
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0.16}
+  m_Center: {x: 0, y: 1.1420975, z: 0.16000003}
 --- !u!114 &6712165144517267866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,7 +423,9 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 1
   playerModel: {fileID: 4407876034128565437}
-  playerCollider: {fileID: 4407876034128565437}
+  playerCollider: {fileID: 7061374898633491223}
+  movementScript: {fileID: -6996328759189710556}
+  rb: {fileID: 3310226656550415140}
 --- !u!114 &-5061838557924638088
 MonoBehaviour:
   m_ObjectHideFlags: 0
