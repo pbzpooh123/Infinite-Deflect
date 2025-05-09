@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -35,5 +36,18 @@ public class UIManager : MonoBehaviour
         sessionListWidget.SetActive(false);
         canva.SetActive(false);
         Mcanva.SetActive(true);
+    }
+
+    public void OnQuitbutton()
+    {
+        Application.Quit();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 }
